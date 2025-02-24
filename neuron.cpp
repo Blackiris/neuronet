@@ -1,0 +1,21 @@
+#include "neuron.h"
+
+Neuron::Neuron(int nb_weight) : m_weights(nb_weight, 0.f) {
+
+}
+
+Neuron::Neuron(Vector<float> &weights) :
+    m_weights(weights) {}
+
+Neuron::Neuron(Vector<float> &weights, std::function<float(float)> &lambda) :
+    m_weights(weights), m_activation_fun(lambda) {}
+
+float Neuron::compute_output(Vector<float> input_vector) {
+    float s = m_weights.dot(input_vector);
+    m_output = m_activation_fun(s);
+    return m_output;
+}
+
+float Neuron::get_output() const {
+    return m_output;
+}
