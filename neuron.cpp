@@ -1,6 +1,6 @@
 #include "neuron.h"
 
-Neuron::Neuron(int nb_weight) : m_weights(nb_weight, 0.f) {
+Neuron::Neuron(int nb_weight) : m_weights(nb_weight, 1.f) {
 
 }
 

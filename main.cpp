@@ -42,7 +42,7 @@ int main()
     NeuronsNetwork network;
     NetworkTrainer network_trainer;
 
-    network_trainer.train_network(network, datas, 0.1, 1000);
+    network_trainer.train_network(network, datas, 0.1, 100);
 
     auto res = network.compute(map_data_to_input({0,0,0,0,1,0,0,0,0,0}));
     std::cout << res;
