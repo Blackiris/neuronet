@@ -1,7 +1,10 @@
 #include "neuron.h"
 
-Neuron::Neuron(int nb_weight) : m_weights(nb_weight, 1.f) {
-
+Neuron::Neuron(int nb_weight) : m_weights(nb_weight) {
+    for (int j=0; j<m_weights.size(); j++) {
+        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        m_weights[j] = r;
+    }
 }
 
 Neuron::Neuron(Vector<float> &weights) :

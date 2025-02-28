@@ -19,6 +19,8 @@ public:
 
     Vector<float> m_weights;
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
+    std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };
+
 
 private:
     float m_output = 0;

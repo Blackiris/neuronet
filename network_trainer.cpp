@@ -28,13 +28,13 @@ void NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Trai
             for (int j=0; j<neuron.m_weights.size(); j++) {
                 float &weight = neuron.m_weights[j];
 
-                weight -= epsilon * dCdZ[k] * previous_layer->get_value_at(j);
+                weight -= epsilon * dCdZ[k] * neuron.m_deriv_activation_fun(neuron.get_output()) * previous_layer->get_value_at(j);
 
-                dCdZprime[k] += dCdZ[k] * weight;
+                dCdZprime[k] += dCdZ[k] * neuron.m_deriv_activation_fun(neuron.get_output()) * weight;
             }
-            std::cout << std::format("Neurone {} - {}", i, k) << " dCdz " << dCdZ[k] << " Weight: " << neuron.m_weights << "\n";
+            //std::cout << std::format("Neurone {} - {}", i, k) << " dCdz " << dCdZ[k] << " Weight: " << neuron.m_weights << "\n";
         }
 
-        dCdZ = dCdZprime;
+        dCdZ = dCdZprime/layer->m_neurons.size();
     }
 }

@@ -9,6 +9,7 @@ class Vector
 {
 public:
     Vector();
+    Vector(const int &size);
     Vector(const int &size, T default_value);
     Vector(std::vector<T> vect);
 
@@ -40,6 +41,14 @@ public:
         Vector res(this->m_vect);
         for (int i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] * value;
+        }
+        return res;
+    }
+
+    Vector operator/(const int& value) {
+        Vector res(this->m_vect);
+        for (int i=0; i<m_vect.size(); i++) {
+            res.m_vect[i] = res.m_vect[i] / value;
         }
         return res;
     }
@@ -86,6 +95,11 @@ private:
 
 template <typename T>
 Vector<T>::Vector() {}
+
+template <typename T>
+Vector<T>::Vector(const int &size) {
+    m_vect.assign(size, 0.f);
+}
 
 template <typename T>
 Vector<T>::Vector(const int &size, T default_value) {
