@@ -17,6 +17,9 @@ add_executable(NeuroNet main.cpp
     input_layer.h input_layer.cpp
     neurons_layer.h neurons_layer.cpp
     ilayer.cpp
+    cases/case1.h cases/case1.cpp
+    cases/Case.h
+    cases/case_mnist.h cases/case_mnist.cpp
 )
 
 include(GNUInstallDirs)
