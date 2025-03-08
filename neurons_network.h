@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <vector>
-#include "ilayer.h"
 #include "input_layer.h"
 #include "neurons_layer.h"
 
