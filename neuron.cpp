@@ -5,6 +5,7 @@ Neuron::Neuron(int nb_weight) : m_weights(nb_weight) {
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         m_weights[j] = r;
     }
+    m_weights.normalize();
 }
 
 Neuron::Neuron(Vector<float> &weights) :

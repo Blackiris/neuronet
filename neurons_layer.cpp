@@ -14,3 +14,7 @@ Vector<float> NeuronsLayer::compute_outputs(const Vector<float> &input_vector) {
     return m_outputs;
 }
 
+unsigned int NeuronsLayer::get_output_size() {
+    return m_neurons.size();
+}
+

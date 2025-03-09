@@ -8,7 +8,7 @@ class InputLayer : public ILayer
 public:
     InputLayer();
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
-
+    unsigned int get_output_size() override;
 
 };
 

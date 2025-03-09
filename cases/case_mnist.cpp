@@ -21,7 +21,7 @@ void CaseMnist::run() {
 
     NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 10, 5);
     NetworkTrainer network_trainer;
-    network_trainer.train_network(*network, training_datas, 0.1, 1000);
+    network_trainer.train_network(*network, training_datas, 0.000001, 1000);
 }
 
 
@@ -41,9 +41,12 @@ std::uint32_t read32bits(char* buffer, const int &pos) {
 }
 
 TrainingData CaseMnist::convertImageToTrainingData(const Image &image, const unsigned char &label) {
-    auto unary_op = [](unsigned char num) {return num/255.f;};
+    std::function<float(unsigned char)> unary_op = [](unsigned char num) {
+        return num/255.f;
+    };
     std::vector<float> pixels;
-    std::copy_if(image.pixels.begin(), image.pixels.end(), std::back_inserter(pixels), unary_op);
+    std::copy(image.pixels.begin(), image.pixels.end(), std::back_inserter(pixels));
+    std::transform(pixels.begin(), pixels.end(), std::back_inserter(pixels), unary_op);
     return TrainingData(pixels, mapIntToNetworkOuput(label));
 }
 

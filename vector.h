@@ -54,11 +54,13 @@ public:
         return res;
     }
 
+
+
     T& operator[](const int& pos) {
         return this->m_vect[pos];
     }
 
-    int size() {
+    int size() const {
         return m_vect.size();
     }
 
@@ -72,6 +74,14 @@ public:
             s += this->m_vect[i] * other.m_vect[i];
         }
         return s;
+    }
+
+    void normalize() {
+        T sum = 0;
+        for (auto& val : this->m_vect) {
+            sum += val;
+        }
+        *this = (*this/sum);
     }
 
     void push(T value) {

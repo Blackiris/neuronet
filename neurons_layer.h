@@ -11,6 +11,7 @@ public:
     NeuronsLayer(const unsigned int &size, const unsigned int &nb_weights);
 
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
+    unsigned int get_output_size() override;
 
     std::vector<Neuron> m_neurons;
 };
