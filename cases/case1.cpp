@@ -32,7 +32,7 @@ std::vector<float> map_data_to_input(const std::array<bool, 10> &data_array) {
 }
 
 void Case1::run() {
-    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(10, 10, 2);
+    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(10, 10, 10, 2);
     NetworkTrainer network_trainer;
     network_trainer.train_network(*network, datas, 0.1, 1000);
 
