@@ -1,12 +1,15 @@
 #include "neuronsnetworkfactory.h"
 
-NeuronsNetwork* NeuronsNetworkFactory::createNetwork() {
+NeuronsNetwork* NeuronsNetworkFactory::createNetwork(const unsigned int &input_size, const unsigned int &output_size, const unsigned int &nb_layers) {
     NeuronsNetwork* neurons_network = new NeuronsNetwork();
-    std::vector<std::unique_ptr<NeuronsLayer>> m_layers;
-    std::unique_ptr<NeuronsLayer> neurons_layer(new NeuronsLayer(10, 10));
-    std::unique_ptr<NeuronsLayer> neurons_layer2(new NeuronsLayer(10, 10));
-    neurons_network->m_layers.push_back(std::move(neurons_layer));
-    neurons_network->m_layers.push_back(std::move(neurons_layer2));
+
+    for (unsigned int i=0; i<nb_layers; i++) {
+        if (i == nb_layers - 1) {
+            neurons_network->m_layers.push_back(std::make_unique<NeuronsLayer>(output_size, input_size));
+        } else {
+            neurons_network->m_layers.push_back(std::make_unique<NeuronsLayer>(input_size, input_size));
+        }
+    }
 
     return neurons_network;
 }

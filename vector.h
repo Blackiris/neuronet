@@ -9,9 +9,10 @@ class Vector
 {
 public:
     Vector();
-    Vector(const int &size);
+    explicit Vector(const int &size);
     Vector(const int &size, T default_value);
     Vector(std::vector<T> vect);
+    Vector(std::initializer_list<T> init);
 
     Vector operator+(const Vector& other) {
         Vector res(this->m_vect);
@@ -108,5 +109,10 @@ Vector<T>::Vector(const int &size, T default_value) {
 
 template <typename T>
 Vector<T>::Vector(std::vector<T> vect): m_vect(vect) {}
+
+template <typename T>
+Vector<T>::Vector(std::initializer_list<T> init) {
+    m_vect.assign(init.begin(), init.end());
+}
 
 #endif // VECTOR_H

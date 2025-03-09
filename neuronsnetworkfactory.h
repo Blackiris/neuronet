@@ -6,7 +6,7 @@
 class NeuronsNetworkFactory
 {
 public:
-    static NeuronsNetwork* createNetwork();
+    static NeuronsNetwork* createNetwork(const unsigned int &input_size, const unsigned int &output_size, const unsigned int &nb_layers);
 private:
     NeuronsNetworkFactory();
 };

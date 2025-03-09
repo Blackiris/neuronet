@@ -26,6 +26,7 @@ private:
     std::vector<Image> readImages(std::string path);
     Image readImage(const std::uint32_t &nb_rows, const std::uint32_t &nb_cols, std::ifstream &inputFile, char buffer[]);
     TrainingData convertImageToTrainingData(const Image &image, const unsigned char &label);
+    std::vector<TrainingData> convertToTrainingDatas(const std::vector<Image> images, const std::vector<unsigned char> &labels);
 
 };
 

@@ -1,16 +1,37 @@
 #include "case_mnist.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <memory>
+
+#include "../neurons_network.h"
+#include "../neuronsnetworkfactory.h"
+#include "../network_trainer.h"
 
 CaseMnist::CaseMnist() {}
 
 void CaseMnist::run() {
     std::vector<unsigned char> labels = readLabels("train-labels.idx1-ubyte");
     std::vector<Image> images = readImages("train-images.idx3-ubyte");
+    std::vector<TrainingData> training_datas = convertToTrainingDatas(images, labels);
+
+    const unsigned int input_size = training_datas[0].input.size();
+
+    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 10, 5);
+    NetworkTrainer network_trainer;
+    network_trainer.train_network(*network, training_datas, 0.1, 1000);
 }
+
+
+std::vector<float> mapIntToNetworkOuput(const unsigned char i) {
+    std::vector<float> res;
+    res.assign(10, 0);
+    res[i] = 1;
+    return res;
+}
+
 
 std::uint32_t read32bits(char* buffer, const int &pos) {
     return (reinterpret_cast<unsigned char&>(buffer[pos]) << 24)
@@ -18,6 +39,24 @@ std::uint32_t read32bits(char* buffer, const int &pos) {
         | (reinterpret_cast<unsigned char&>(buffer[pos+2]) << 8)
         | reinterpret_cast<unsigned char&>(buffer[pos+3]);
 }
+
+TrainingData CaseMnist::convertImageToTrainingData(const Image &image, const unsigned char &label) {
+    auto unary_op = [](unsigned char num) {return num/255.f;};
+    std::vector<float> pixels;
+    std::copy_if(image.pixels.begin(), image.pixels.end(), std::back_inserter(pixels), unary_op);
+    return TrainingData(pixels, mapIntToNetworkOuput(label));
+}
+
+std::vector<TrainingData> CaseMnist::convertToTrainingDatas(const std::vector<Image> images, const std::vector<unsigned char> &labels) {
+    size_t size = labels.size();
+    std::vector<TrainingData> training_datas;
+    training_datas.reserve(size);
+    for (int i=0; i<size; i++) {
+        training_datas.push_back(convertImageToTrainingData(images[i], labels[i]));
+    }
+    return training_datas;
+}
+
 
 std::vector<unsigned char> CaseMnist::readLabels(std::string path) {
     std::ifstream inputFile(path, std::ios::binary);
