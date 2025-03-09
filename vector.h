@@ -60,6 +60,10 @@ public:
         return this->m_vect[pos];
     }
 
+    const T& operator[](const int& pos) const {
+        return this->m_vect[pos];
+    }
+
     int size() const {
         return m_vect.size();
     }

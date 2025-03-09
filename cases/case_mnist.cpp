@@ -9,20 +9,33 @@
 #include "../neurons_network.h"
 #include "../neuronsnetworkfactory.h"
 #include "../network_trainer.h"
+#include "../vector.h"
+#include "../vector_util.h"
 
 CaseMnist::CaseMnist() {}
 
-void CaseMnist::run() {
-    std::vector<unsigned char> labels = readLabels("train-labels.idx1-ubyte");
-    std::vector<Image> images = readImages("train-images.idx3-ubyte");
-    std::vector<TrainingData> training_datas = convertToTrainingDatas(images, labels);
 
-    const unsigned int input_size = training_datas[0].input.size();
-
-    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 10, 5);
-    NetworkTrainer network_trainer;
-    network_trainer.train_network(*network, training_datas, 0.000001, 1000);
+unsigned int mapNetworkOutputToRes(const Vector<float> &output) {
+    return VectorUtil::find_max_pos<float>(output);
 }
+
+bool isResultGood(const Vector<float> &expected, const Vector<float> &actual) {
+    return mapNetworkOutputToRes(expected) == mapNetworkOutputToRes(actual);
+}
+
+void testNetwork(std::vector<TrainingData> &datas, NeuronsNetwork* network) {
+    unsigned int correct = 0;
+
+    for (unsigned int i=0; i<datas.size(); i++) {
+        const TrainingData data = datas[i];
+        Vector<float> actual_res = network->compute(data.input);
+        if (isResultGood(data.res, actual_res)) {
+            correct++;
+        }
+    }
+    std::cout << correct << "/" << datas.size() << "\n";
+}
+
 
 
 std::vector<float> mapIntToNetworkOuput(const unsigned char i) {
@@ -40,13 +53,32 @@ std::uint32_t read32bits(char* buffer, const int &pos) {
         | reinterpret_cast<unsigned char&>(buffer[pos+3]);
 }
 
+void CaseMnist::run() {
+    std::vector<unsigned char> training_labels = readLabels("train-labels.idx1-ubyte");
+    std::vector<Image> training_images = readImages("train-images.idx3-ubyte");
+    std::vector<TrainingData> training_datas = convertToTrainingDatas(training_images, training_labels);
+    std::vector<TrainingData> training_datas_small(&training_datas[0], &training_datas[100]);
+
+    std::vector<unsigned char> test_labels = readLabels("t10k-labels.idx1-ubyte");
+    std::vector<Image> test_images = readImages("t10k-images.idx3-ubyte");
+    std::vector<TrainingData> test_datas = convertToTrainingDatas(test_images, test_labels);
+
+    const unsigned int input_size = training_datas[0].input.size();
+
+    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 10, 1);
+    NetworkTrainer network_trainer;
+    network_trainer.train_network(*network, training_datas_small, 0.00001, 5000);
+
+    testNetwork(test_datas, network);
+}
+
+
 TrainingData CaseMnist::convertImageToTrainingData(const Image &image, const unsigned char &label) {
     std::function<float(unsigned char)> unary_op = [](unsigned char num) {
         return num/255.f;
     };
     std::vector<float> pixels;
-    std::copy(image.pixels.begin(), image.pixels.end(), std::back_inserter(pixels));
-    std::transform(pixels.begin(), pixels.end(), std::back_inserter(pixels), unary_op);
+    std::transform(image.pixels.begin(), image.pixels.end(), std::back_inserter(pixels), unary_op);
     return TrainingData(pixels, mapIntToNetworkOuput(label));
 }
 

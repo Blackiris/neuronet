@@ -21,6 +21,8 @@ add_executable(NeuroNet main.cpp
     cases/Case.h
     cases/case_mnist.h cases/case_mnist.cpp
     neuronsnetworkfactory.h neuronsnetworkfactory.cpp
+    vector_util.h
+    vector_util.cpp
 )
 
 include(GNUInstallDirs)
