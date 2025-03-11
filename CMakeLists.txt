@@ -23,6 +23,7 @@ add_executable(NeuroNet main.cpp
     neuronsnetworkfactory.h neuronsnetworkfactory.cpp
     vector_util.h
     vector_util.cpp
+    std_vector_util.h
 )
 
 include(GNUInstallDirs)

@@ -2,7 +2,6 @@
 #define NEURON_H
 
 #include <functional>
-#include <vector>
 #include "ioutput.h"
 #include "vector.h"
 
@@ -18,6 +17,10 @@ public:
     float get_output() const override;
 
     Vector<float> m_weights;
+    Vector<float> m_new_weights_delta;
+
+
+    void apply_weight_delta(const float &max_gradiant);
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
     std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };
 

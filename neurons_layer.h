@@ -12,6 +12,7 @@ public:
 
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
     unsigned int get_output_size() override;
+    void apply_new_weights(const float &max_gradiant);
 
     std::vector<Neuron> m_neurons;
 };

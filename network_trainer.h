@@ -11,7 +11,10 @@ class NetworkTrainer
 public:
     NetworkTrainer();
 
-    void train_network(NeuronsNetwork &network, const std::vector<TrainingData> &datas, const float &epsilon, const int &nb_iterations);
+    void train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks,
+                       const float &epsilon, const int &nb_iterations, const float &max_gradiant);
+
+    int test_network(NeuronsNetwork &network, std::vector<TrainingData> &datas);
 
     std::function<float(std::vector<float>, std::vector<float>)> m_cost = [](std::vector<float> a, std::vector<float> b) {
         int len = a.size();

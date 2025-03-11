@@ -10,32 +10,9 @@
 #include "../neuronsnetworkfactory.h"
 #include "../network_trainer.h"
 #include "../vector.h"
-#include "../vector_util.h"
+#include "../std_vector_util.h"
 
 CaseMnist::CaseMnist() {}
-
-
-unsigned int mapNetworkOutputToRes(const Vector<float> &output) {
-    return VectorUtil::find_max_pos<float>(output);
-}
-
-bool isResultGood(const Vector<float> &expected, const Vector<float> &actual) {
-    return mapNetworkOutputToRes(expected) == mapNetworkOutputToRes(actual);
-}
-
-void testNetwork(std::vector<TrainingData> &datas, NeuronsNetwork* network) {
-    unsigned int correct = 0;
-
-    for (unsigned int i=0; i<datas.size(); i++) {
-        const TrainingData data = datas[i];
-        Vector<float> actual_res = network->compute(data.input);
-        if (isResultGood(data.res, actual_res)) {
-            correct++;
-        }
-    }
-    std::cout << correct << "/" << datas.size() << "\n";
-}
-
 
 
 std::vector<float> mapIntToNetworkOuput(const unsigned char i) {
@@ -57,7 +34,7 @@ void CaseMnist::run() {
     std::vector<unsigned char> training_labels = readLabels("train-labels.idx1-ubyte");
     std::vector<Image> training_images = readImages("train-images.idx3-ubyte");
     std::vector<TrainingData> training_datas = convertToTrainingDatas(training_images, training_labels);
-    std::vector<TrainingData> training_datas_small(&training_datas[0], &training_datas[10]);
+    std::vector<TrainingData> training_datas_small(&training_datas[0], &training_datas[3000]);
 
     std::vector<unsigned char> test_labels = readLabels("t10k-labels.idx1-ubyte");
     std::vector<Image> test_images = readImages("t10k-images.idx3-ubyte");
@@ -67,9 +44,10 @@ void CaseMnist::run() {
 
     NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 16, 10, 2);
     NetworkTrainer network_trainer;
-    network_trainer.train_network(*network, training_datas_small, 0.00001, 5000);
+    std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 100);
 
-    testNetwork(test_datas, network);
+    network_trainer.train_network(*network, datas_chunks, 0.0001, 60000, 0.01);
+    network_trainer.test_network(*network, test_datas);
 }
 
 
@@ -86,7 +64,7 @@ std::vector<TrainingData> CaseMnist::convertToTrainingDatas(const std::vector<Im
     size_t size = labels.size();
     std::vector<TrainingData> training_datas;
     training_datas.reserve(size);
-    for (int i=0; i<size; i++) {
+    for (unsigned int i=0; i<size; i++) {
         training_datas.push_back(convertImageToTrainingData(images[i], labels[i]));
     }
     return training_datas;

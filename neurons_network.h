@@ -14,6 +14,8 @@ public:
 
     InputLayer m_input_layer;
     std::vector<std::unique_ptr<NeuronsLayer>> m_layers;
+
+    void apply_new_weights(const float &max_gradiant);
 };
 
 #endif // NEURONS_NETWORK_H

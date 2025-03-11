@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 template <typename T>
 class Vector
@@ -22,12 +23,26 @@ public:
         return res;
     }
 
+    Vector& operator+=(const Vector& other) {
+        for (int i=0; i<m_vect.size(); i++) {
+            this->m_vect[i] = this->m_vect[i] + other.m_vect[i];
+        }
+        return *this;
+    }
+
     Vector operator-(const Vector& other) {
         Vector res(this->m_vect);
         for (int i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] - other.m_vect[i];
         }
         return res;
+    }
+
+    Vector& operator-=(const Vector& other) {
+        for (int i=0; i<m_vect.size(); i++) {
+            this->m_vect[i] = this->m_vect[i] - other.m_vect[i];
+        }
+        return *this;
     }
 
     Vector operator*(const float& value) {
@@ -54,6 +69,13 @@ public:
         return res;
     }
 
+    Vector& operator/=(const float& value) {
+        for (int i=0; i<m_vect.size(); i++) {
+            this->m_vect[i] = this->m_vect[i] / value;
+        }
+        return *this;
+    }
+
 
 
     T& operator[](const int& pos) {
@@ -72,6 +94,10 @@ public:
         this->m_vect.reserve(size);
     }
 
+    void assign(const T& value) {
+        this->m_vect.assign(this->m_vect.size(), value);
+    }
+
     T dot(const Vector<T>& other) {
         T s = 0;
         for (size_t i = 0; i<other.m_vect.size(); i++) {
@@ -80,12 +106,16 @@ public:
         return s;
     }
 
-    void normalize() {
+    T length() {
         T sum = 0;
         for (auto& val : this->m_vect) {
-            sum += val;
+            sum += val*val;
         }
-        *this = (*this/sum);
+        return std::sqrt(sum);
+    }
+
+    void normalize() {
+        *this = (*this/this->length());
     }
 
     void push(T value) {

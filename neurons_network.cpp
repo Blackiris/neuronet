@@ -17,3 +17,10 @@ Vector<float> NeuronsNetwork::compute(const Vector<float> &input) {
 
     return intermediate_output;
 }
+
+
+void NeuronsNetwork::apply_new_weights(const float &max_gradiant) {
+    for (auto&& layer: m_layers) {
+        layer->apply_new_weights(max_gradiant);
+    }
+}

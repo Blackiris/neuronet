@@ -29,6 +29,7 @@ namespace VectorUtil {
         }
         return pos;
     }
+
 }
 
 #endif // VECTOR_UTIL_H
