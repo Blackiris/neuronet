@@ -1,14 +1,16 @@
 #ifndef NEURON_H
 #define NEURON_H
 
-#include <functional>
 #include "ioutput.h"
 #include "vector.h"
-
+#include <functional>
+#include <random>
 
 class Neuron : public IOutput
 {
 public:
+
+
     Neuron(int nb_weight);
     Neuron(Vector<float> &weights);
     Neuron(Vector<float> &weights, std::function<float(float)> &lambda);
@@ -19,6 +21,7 @@ public:
     Vector<float> m_weights;
     Vector<float> m_new_weights_delta;
 
+    float& get_weight(const unsigned int &idx);
 
     void apply_weight_delta(const float &max_gradiant);
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
@@ -27,6 +30,9 @@ public:
 
 private:
     float m_output = 0;
+
+    static std::random_device rd;
+    static std::mt19937 gen;
 };
 
 #endif // NEURON_H

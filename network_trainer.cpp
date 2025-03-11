@@ -6,23 +6,22 @@ NetworkTrainer::NetworkTrainer() {}
 
 
 void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks, std::vector<TrainingData> test_datas,
-                                   const float &epsilon, const int &nb_iterations, const float &max_gradiant) {
+                                   const float &epsilon, const int &nb_epochs, const float &max_gradiant) {
     int iteration(0);
 
     while(true) {
         for (auto& datas_chunk : datas_chunks) {
+            iteration++;
             for (auto& data: datas_chunk) {
-                iteration++;
                 train_network_with_data(network, data, epsilon);
-
-                if (iteration >= nb_iterations) {
-                    return;
-                }
             }
-            int correct = test_network(network, test_datas);
-            std::cout << std::format("Iterations {} - {}/{}", iteration, correct, test_datas.size()) << "\n";
-            network.apply_new_weights(max_gradiant);
 
+            network.apply_new_weights(max_gradiant);
+            int correct = test_network(network, test_datas);
+            std::cout << std::format("Epoch {} - {}/{}", iteration, correct, test_datas.size()) << "\n";
+            if (iteration >= nb_epochs) {
+                return;
+            }
         }
     }
 }
@@ -67,9 +66,9 @@ void NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Trai
             Neuron &neuron = layer->m_neurons[k];
 
             //std::cout <<k << "A "<< &layer->m_neurons<< "\n";
-            for (int j=0; j<neuron.m_weights.size(); j++) {
+            for (unsigned int j=0; j<previous_layer->get_output_size(); j++) {
 
-                float &weight = neuron.m_weights[j];
+                const float &weight = neuron.get_weight(j);
 
                 neuron.m_new_weights_delta[j] -= epsilon * dCdZ[k] * neuron.m_deriv_activation_fun(neuron.get_output()) * previous_layer->get_value_at(j);
 

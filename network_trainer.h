@@ -11,7 +11,7 @@ public:
     NetworkTrainer();
 
     void train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks, std::vector<TrainingData> test_datas,
-                       const float &epsilon, const int &nb_iterations, const float &max_gradiant);
+                       const float &epsilon, const int &nb_epochs, const float &max_gradiant);
 
     int test_network(NeuronsNetwork &network, std::vector<TrainingData> &datas);
 

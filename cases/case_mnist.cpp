@@ -42,11 +42,11 @@ void CaseMnist::run() {
 
     const unsigned int input_size = training_datas[0].input.size();
 
-    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 16, 10, 2);
+    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 16, 10, 3);
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 500);
 
-    network_trainer.train_network(*network, datas_chunks, test_datas, 0.001, 60000, 0.01);
+    network_trainer.train_network(*network, datas_chunks, test_datas, 0.001, 100000, 0.1);
     network_trainer.test_network(*network, test_datas);
 }
 

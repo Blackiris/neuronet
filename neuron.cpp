@@ -1,11 +1,16 @@
 #include "neuron.h"
 
+std::random_device Neuron::rd;
+std::mt19937 Neuron::gen(Neuron::rd());
+
 Neuron::Neuron(int nb_weight) : m_weights(nb_weight), m_new_weights_delta(nb_weight, 0) {
+    // Xavier - He init
+    std::normal_distribution d{0.0, 2.0/nb_weight};
+
     for (int j=0; j<m_weights.size(); j++) {
-        float r = (static_cast<float>(rand()) * 2 / static_cast<float>(RAND_MAX)) - 1;
+        float r = d(gen);
         m_weights[j] = r;
     }
-    m_weights.normalize();
 }
 
 Neuron::Neuron(Vector<float> &weights) :
@@ -31,4 +36,8 @@ float Neuron::compute_output(Vector<float> input_vector) {
 
 float Neuron::get_output() const {
     return m_output;
+}
+
+float& Neuron::get_weight(const unsigned int &idx) {
+    return m_weights[idx];
 }

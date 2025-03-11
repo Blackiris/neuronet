@@ -134,6 +134,7 @@ public:
         return os;
     }
 
+
 private:
     std::vector<T> m_vect;
 };
