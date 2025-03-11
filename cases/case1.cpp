@@ -4,7 +4,6 @@
 #include "../neuronsnetworkfactory.h"
 #include "../network_trainer.h"
 #include "../training_data.h"
-#include "../vector.h"
 
 Case1::Case1() {}
 
@@ -35,8 +34,7 @@ void Case1::run() {
     NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(10, 10, 10, 2);
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datasArray = {datas};
-    network_trainer.train_network(*network, datasArray, 0.1, 1000, 1);
-
-    auto res = network->compute(map_data_to_input({0,0,0,0,1,0,0,0,0,0}));
-    std::cout << "RES: "<< res << std::flush;
+    network_trainer.train_network(*network, datasArray, datas, 0.1, 1000, 1);
+    int res = network_trainer.test_network(*network, datas);
+    std::cout << "RES: "<< res << "/" << datas.size() << std::flush;
 }

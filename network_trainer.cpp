@@ -5,7 +5,7 @@
 NetworkTrainer::NetworkTrainer() {}
 
 
-void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks,
+void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks, std::vector<TrainingData> test_datas,
                                    const float &epsilon, const int &nb_iterations, const float &max_gradiant) {
     int iteration(0);
 
@@ -13,15 +13,16 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
         for (auto& datas_chunk : datas_chunks) {
             for (auto& data: datas_chunk) {
                 iteration++;
-                std::cout <<"Iteration "<<iteration<< "\n";
                 train_network_with_data(network, data, epsilon);
 
                 if (iteration >= nb_iterations) {
                     return;
                 }
             }
-            //std::cout << std::format("Iterations {} - {}", iteration, k) << "Iterations "<<iteration<< "\n";
+            int correct = test_network(network, test_datas);
+            std::cout << std::format("Iterations {} - {}/{}", iteration, correct, test_datas.size()) << "\n";
             network.apply_new_weights(max_gradiant);
+
         }
     }
 }
@@ -44,7 +45,7 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, std::vector<TrainingDa
             correct++;
         }
     }
-    std::cout << correct << "/" << datas.size() << "\n";
+
     return correct;
 }
 
@@ -54,7 +55,7 @@ void NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Trai
     Vector<float> dCdZ = (actual_res - data.res) * 2;
     std::vector<Vector<float>> weight_changes;
 
-    std::cout <<actual_res<< "\n" << data.res<<"\n\n\n";
+    //std::cout <<actual_res<< "\n" << data.res<<"\n\n\n";
 
     for (int i = network.m_layers.size() -1; i>=0; i--) {
         //std::cout <<dCdZ<< "\n";
