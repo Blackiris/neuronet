@@ -3,7 +3,13 @@
 
 #include <vector>
 #include "training_data.h"
-#include "neurons_network.h"
+#include "neurons_network/neurons_network.h"
+
+struct TrainingParams {
+    float epsilon;
+    int nb_epochs;
+    float max_gradiant;
+};
 
 class NetworkTrainer
 {
@@ -11,7 +17,7 @@ public:
     NetworkTrainer();
 
     void train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks, std::vector<TrainingData> test_datas,
-                       const float &epsilon, const int &nb_epochs, const float &max_gradiant);
+                       const TrainingParams &training_params);
 
     int test_network(NeuronsNetwork &network, std::vector<TrainingData> &datas);
 

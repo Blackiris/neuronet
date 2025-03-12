@@ -6,8 +6,8 @@
 #include <iostream>
 #include <memory>
 
-#include "../neurons_network.h"
-#include "../neuronsnetworkfactory.h"
+#include "../neurons_network/neurons_network.h"
+#include "../neurons_network/neuronsnetworkfactory.h"
 #include "../network_trainer.h"
 #include "../vector.h"
 #include "../std_vector_util.h"
@@ -42,11 +42,11 @@ void CaseMnist::run() {
 
     const unsigned int input_size = training_datas[0].input.size();
 
-    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 16, 10, 3);
+    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(input_size, 16, 10, 2);
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 500);
 
-    network_trainer.train_network(*network, datas_chunks, test_datas, 0.001, 100000, 0.1);
+    network_trainer.train_network(*network, datas_chunks, test_datas, {0.001, 1000, 1});
     network_trainer.test_network(*network, test_datas);
 }
 

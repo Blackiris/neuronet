@@ -1,7 +1,7 @@
 #include "case1.h"
 
-#include "../neurons_network.h"
-#include "../neuronsnetworkfactory.h"
+#include "../neurons_network/neurons_network.h"
+#include "../neurons_network/neuronsnetworkfactory.h"
 #include "../network_trainer.h"
 #include "../training_data.h"
 
@@ -34,7 +34,7 @@ void Case1::run() {
     NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(10, 10, 10, 2);
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datasArray = {datas};
-    network_trainer.train_network(*network, datasArray, datas, 0.1, 1000, 1);
+    network_trainer.train_network(*network, datasArray, datas, {0.1, 1000, 1});
     int res = network_trainer.test_network(*network, datas);
     std::cout << "RES: "<< res << "/" << datas.size() << std::flush;
 }

@@ -1,7 +1,7 @@
 #ifndef ILAYER_H
 #define ILAYER_H
 
-#include "vector.h"
+#include "../vector.h"
 
 class ILayer
 {

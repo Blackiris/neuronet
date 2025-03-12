@@ -17,7 +17,11 @@ Neuron::Neuron(Vector<float> &weights) :
     m_weights(weights) {}
 
 Neuron::Neuron(Vector<float> &weights, std::function<float(float)> &lambda) :
-    m_weights(weights), m_activation_fun(lambda) {}
+    m_activation_fun(lambda), m_weights(weights) {}
+
+void Neuron::add_weight_delta(const unsigned int &idx, const float &delta_to_add) {
+    m_new_weights_delta[idx] += delta_to_add;
+}
 
 void Neuron::apply_weight_delta(const float &max_gradiant) {
     float length = m_new_weights_delta.length();
