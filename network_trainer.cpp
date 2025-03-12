@@ -26,12 +26,12 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
     }
 }
 
-unsigned int mapNetworkOutputToRes(const Vector<float> &output) {
+unsigned int map_network_output_to_res(const Vector<float> &output) {
     return VectorUtil::find_max_pos<float>(output);
 }
 
 bool isResultGood(const Vector<float> &expected, const Vector<float> &actual) {
-    return mapNetworkOutputToRes(expected) == mapNetworkOutputToRes(actual);
+    return map_network_output_to_res(expected) == map_network_output_to_res(actual);
 }
 
 int NetworkTrainer::test_network(NeuronsNetwork& network, std::vector<TrainingData> &datas) {

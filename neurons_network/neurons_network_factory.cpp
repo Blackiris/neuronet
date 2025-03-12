@@ -1,6 +1,6 @@
-#include "neuronsnetworkfactory.h"
+#include "neurons_network_factory.h"
 
-NeuronsNetwork* NeuronsNetworkFactory::createNetwork(const unsigned int &input_size, const unsigned int &hidden_size, const unsigned int &output_size, const unsigned int &nb_layers) {
+NeuronsNetwork* NeuronsNetworkFactory::create_network(const unsigned int &input_size, const unsigned int &hidden_size, const unsigned int &output_size, const unsigned int &nb_layers) {
     NeuronsNetwork* neurons_network = new NeuronsNetwork();
     unsigned int final_hidden_size = hidden_size;
     if (nb_layers == 1) {

@@ -29,7 +29,8 @@ add_executable(NeuroNet main.cpp
     neurons_network/input_layer.h neurons_network/input_layer.cpp
     neurons_network/neurons_layer.h neurons_network/neurons_layer.cpp
     neurons_network/neurons_network.h neurons_network/neurons_network.cpp
-    neurons_network/neuronsnetworkfactory.h neurons_network/neuronsnetworkfactory.cpp
+    neurons_network/neurons_network_factory.h neurons_network/neurons_network_factory.cpp
+    neurons_network/max_pooling_neuron.h neurons_network/max_pooling_neuron.cpp
 
 )
 

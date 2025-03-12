@@ -9,6 +9,7 @@
 class Neuron : public IOutput
 {
 public:
+    Neuron();
     Neuron(int nb_weight);
     Neuron(Vector<float> &weights);
     Neuron(Vector<float> &weights, std::function<float(float)> &lambda);
@@ -23,9 +24,10 @@ public:
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
     std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };
 
+protected:
+    float m_output = 0;
 
 private:
-    float m_output = 0;
     Vector<float> m_weights;
     Vector<float> m_new_weights_delta;
 

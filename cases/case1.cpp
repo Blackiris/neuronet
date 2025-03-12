@@ -1,7 +1,7 @@
 #include "case1.h"
 
 #include "../neurons_network/neurons_network.h"
-#include "../neurons_network/neuronsnetworkfactory.h"
+#include "../neurons_network/neurons_network_factory.h"
 #include "../network_trainer.h"
 #include "../training_data.h"
 
@@ -31,7 +31,7 @@ std::vector<float> map_data_to_input(const std::array<bool, 10> &data_array) {
 }
 
 void Case1::run() {
-    NeuronsNetwork* network = NeuronsNetworkFactory::createNetwork(10, 10, 10, 2);
+    NeuronsNetwork* network = NeuronsNetworkFactory::create_network(10, 10, 10, 2);
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datasArray = {datas};
     network_trainer.train_network(*network, datasArray, datas, {0.1, 1000, 1});
