@@ -31,6 +31,7 @@ add_executable(NeuroNet main.cpp
     neurons_network/neurons_network.h neurons_network/neurons_network.cpp
     neurons_network/neurons_network_factory.h neurons_network/neurons_network_factory.cpp
     neurons_network/max_pooling_neuron.h neurons_network/max_pooling_neuron.cpp
+    neurons_network/convolution_layer.h neurons_network/convolution_layer.cpp
 
 )
 

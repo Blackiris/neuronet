@@ -18,6 +18,14 @@ unsigned int NeuronsLayer::get_output_size() {
     return m_neurons.size();
 }
 
+void NeuronsLayer::adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime) {
+    for (unsigned int k=0; k<m_neurons.size(); k++) {
+        Neuron &neuron = m_neurons[k];
+        neuron.adapt_gradient(previous_layer, dCdZ[k], epsilon, dCdZprime);
+        //std::cout << std::format("Neurone {} - {}", i, k) << " dCdz " << dCdZ[k] << " Weight: " << neuron.m_weights << "\n";
+    }
+}
+
 void NeuronsLayer::apply_new_weights(const float &max_gradiant) {
     for (auto& neuron : m_neurons) {
         neuron.apply_gradient_delta(max_gradiant);
