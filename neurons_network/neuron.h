@@ -19,7 +19,7 @@ public:
     float get_output() const override;
 
     void adapt_gradient(ILayer &previous_layer, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime);
-    void apply_weight_delta(const float &max_gradiant);
+    void apply_gradient_delta(const float &max_gradiant);
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
     std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };
 
@@ -27,6 +27,8 @@ protected:
     float m_output = 0;
 
 private:
+    float m_bias = 0;
+    float m_new_bias_delta;
     Vector<float> m_weights;
     Vector<float> m_new_weights_delta;
 

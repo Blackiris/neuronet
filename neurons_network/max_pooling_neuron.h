@@ -10,6 +10,7 @@ public:
                      const unsigned int &pool_x, const unsigned int &pool_y, const unsigned int &pool_size);
 
     float compute_output(Vector<float> input_vector);
+    void adapt_gradient(ILayer &previous_layer, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime);
 
 private:
     unsigned int m_offset;

@@ -20,6 +20,6 @@ unsigned int NeuronsLayer::get_output_size() {
 
 void NeuronsLayer::apply_new_weights(const float &max_gradiant) {
     for (auto& neuron : m_neurons) {
-        neuron.apply_weight_delta(max_gradiant);
+        neuron.apply_gradient_delta(max_gradiant);
     }
 }

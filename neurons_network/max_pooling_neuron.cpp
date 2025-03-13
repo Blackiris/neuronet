@@ -19,3 +19,11 @@ float MaxPoolingNeuron::compute_output(Vector<float> input_vector) {
 
     return m_output;
 }
+
+void MaxPoolingNeuron::adapt_gradient(ILayer &previous_layer, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime) {
+    for (unsigned int i = m_pool_x; i<m_pool_x+m_pool_size; i++) {
+        for (unsigned int j = m_pool_y; j<m_pool_y+m_pool_size; j++) {
+            dCDZprime[m_offset+j*m_input_x+i] += dCdZ;
+        }
+    }
+}
