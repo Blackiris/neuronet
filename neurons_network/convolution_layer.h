@@ -6,7 +6,8 @@
 class ConvolutionLayer : public NeuronsLayer
 {
 public:
-    ConvolutionLayer();
+    ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_size, const unsigned int &stride);
+    Vector<float> compute_outputs(const Vector<float> &input_vector);
 };
 
 #endif // CONVOLUTION_LAYER_H
