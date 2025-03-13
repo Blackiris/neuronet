@@ -3,6 +3,7 @@
 
 #include "../ioutput.h"
 #include "../vector.h"
+#include "ilayer.h"
 #include <functional>
 #include <random>
 
@@ -17,9 +18,7 @@ public:
     float compute_output(Vector<float> input_vector);
     float get_output() const override;
 
-    float& get_weight(const unsigned int &idx);
-
-    void add_weight_delta(const unsigned int &idx, const float &delta_to_add);
+    void adapt_gradient(ILayer &previous_layer, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime);
     void apply_weight_delta(const float &max_gradiant);
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
     std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };

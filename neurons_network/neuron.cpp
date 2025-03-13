@@ -21,8 +21,14 @@ Neuron::Neuron(Vector<float> &weights) :
 Neuron::Neuron(Vector<float> &weights, std::function<float(float)> &lambda) :
     m_activation_fun(lambda), m_weights(weights) {}
 
-void Neuron::add_weight_delta(const unsigned int &idx, const float &delta_to_add) {
-    m_new_weights_delta[idx] += delta_to_add;
+void Neuron::adapt_gradient(ILayer &previous_layer, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime) {
+    for (unsigned int j=0; j<previous_layer.get_output_size(); j++) {
+        const float weight = m_weights[j];
+
+        m_new_weights_delta[j] += -epsilon * dCdZ * m_deriv_activation_fun(m_output) * previous_layer.get_value_at(j);
+
+        dCDZprime[j] += dCdZ * m_deriv_activation_fun(m_output) * weight;
+    }
 }
 
 void Neuron::apply_weight_delta(const float &max_gradiant) {
@@ -42,8 +48,4 @@ float Neuron::compute_output(Vector<float> input_vector) {
 
 float Neuron::get_output() const {
     return m_output;
-}
-
-float& Neuron::get_weight(const unsigned int &idx) {
-    return m_weights[idx];
 }

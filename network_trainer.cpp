@@ -65,17 +65,10 @@ void NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Trai
 
             Neuron &neuron = layer->m_neurons[k];
 
-            //std::cout <<k << "A "<< &layer->m_neurons<< "\n";
-            for (unsigned int j=0; j<previous_layer->get_output_size(); j++) {
+            neuron.adapt_gradient(*previous_layer, dCdZ[k], epsilon, dCdZprime);
 
-                const float &weight = neuron.get_weight(j);
-
-                neuron.add_weight_delta(j, -epsilon * dCdZ[k] * neuron.m_deriv_activation_fun(neuron.get_output()) * previous_layer->get_value_at(j));
-
-                dCdZprime[j] += dCdZ[k] * neuron.m_deriv_activation_fun(neuron.get_output()) * weight;
-            }
             //std::cout << std::format("Neurone {} - {}", i, k) << " dCdz " << dCdZ[k] << " Weight: " << neuron.m_weights << "\n";
-            //std::cout <<k << "B "<< &layer->m_neurons<< "\n";
+
         }
 
         dCdZ = dCdZprime/layer->m_neurons.size();
