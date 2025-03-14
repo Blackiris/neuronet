@@ -1,6 +1,6 @@
 #include "neurons_layer.h"
 
-NeuronsLayer::NeuronsLayer(const unsigned int &size, const unsigned int &nb_weights): ILayer(size) {
+NeuronsLayer::NeuronsLayer(const unsigned int &size, const unsigned int &nb_weights): INeuronsLayer(size) {
     for (unsigned int i=0; i<size; i++) {
         Neuron neuron(nb_weights);
         m_neurons.emplace_back(neuron);

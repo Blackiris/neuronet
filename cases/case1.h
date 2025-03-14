@@ -1,7 +1,7 @@
 #ifndef CASE1_H
 #define CASE1_H
 
-#include "Case.h"
+#include "case.h"
 
 class Case1 : public Case
 {

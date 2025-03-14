@@ -1,11 +1,12 @@
 #ifndef NEURONS_LAYER_H
 #define NEURONS_LAYER_H
 
-#include <vector>
-#include "neuron.h"
 #include "ilayer.h"
+#include "ineurons_layer.h"
+#include "neuron.h"
+#include <vector>
 
-class NeuronsLayer : public ILayer
+class NeuronsLayer : public INeuronsLayer
 {
 public:
     NeuronsLayer(const unsigned int &size, const unsigned int &nb_weights);
@@ -14,7 +15,7 @@ public:
     unsigned int get_output_size() override;
 
     void adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime);
-    void apply_new_weights(const float &max_gradiant);
+    void apply_new_weights(const float &max_gradiant) override;
 
     std::vector<Neuron> m_neurons;
 };

@@ -1,7 +1,7 @@
 #ifndef CASE_MNIST_H
 #define CASE_MNIST_H
 
-#include "Case.h"
+#include "case.h"
 #include <cstdint>
 #include <string>
 #include <vector>

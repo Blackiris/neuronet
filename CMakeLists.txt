@@ -11,11 +11,11 @@ add_executable(NeuroNet main.cpp
 
     network_trainer.h network_trainer.cpp
     training_data.h
-    vector.h vector.cpp
+    vector.h
 
 
     cases/case1.h cases/case1.cpp
-    cases/Case.h
+    cases/case.h
     cases/case_mnist.h cases/case_mnist.cpp
 
     vector_util.h
@@ -32,6 +32,8 @@ add_executable(NeuroNet main.cpp
     neurons_network/neurons_network_factory.h neurons_network/neurons_network_factory.cpp
     neurons_network/max_pooling_neuron.h neurons_network/max_pooling_neuron.cpp
     neurons_network/convolution_layer.h neurons_network/convolution_layer.cpp
+    neurons_network/ineurons_layer.h
+    neurons_network/ineurons_layer.cpp
 
 )
 

@@ -12,7 +12,6 @@ public:
     virtual unsigned int get_output_size() = 0;
     float get_value_at(const int &pos);
 
-    void apply_new_weights();
 
 protected:
     Vector<float> m_outputs;

@@ -14,6 +14,7 @@ public:
     Vector(const int &size, T default_value);
     Vector(std::vector<T> vect);
     Vector(std::initializer_list<T> init);
+    Vector(T *begin, T *end);
 
     Vector operator+(const Vector& other) {
         Vector res(this->m_vect);
@@ -159,5 +160,8 @@ template <typename T>
 Vector<T>::Vector(std::initializer_list<T> init) {
     m_vect.assign(init.begin(), init.end());
 }
+
+template <typename T>
+Vector<T>::Vector(T *begin, T *end) : m_vect(begin, end) {}
 
 #endif // VECTOR_H
