@@ -1,4 +1,5 @@
 #include "neurons_network_factory.h"
+#include "neurons_layer.h"
 
 NeuronsNetwork* NeuronsNetworkFactory::create_network(const unsigned int &input_size, const unsigned int &hidden_size, const unsigned int &output_size, const unsigned int &nb_layers) {
     NeuronsNetwork* neurons_network = new NeuronsNetwork();

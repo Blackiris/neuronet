@@ -5,6 +5,8 @@
 #include "../network_trainer.h"
 #include "../training_data.h"
 
+#include <array>
+
 Case1::Case1() {}
 
 std::vector<TrainingData> datas = {

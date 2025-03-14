@@ -14,7 +14,7 @@ public:
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
     unsigned int get_output_size() override;
 
-    void adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime);
+    void adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime) override;
     void apply_new_weights(const float &max_gradiant) override;
 
     std::vector<Neuron> m_neurons;

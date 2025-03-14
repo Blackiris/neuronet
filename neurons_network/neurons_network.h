@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include "input_layer.h"
-#include "neurons_layer.h"
+#include "ineurons_layer.h"
 
 class NeuronsNetwork
 {
@@ -13,7 +13,7 @@ public:
     Vector<float> compute(const Vector<float> &input);
 
     InputLayer m_input_layer;
-    std::vector<std::unique_ptr<NeuronsLayer>> m_layers;
+    std::vector<std::unique_ptr<INeuronsLayer>> m_layers;
 
     void apply_new_weights(const float &max_gradiant);
 };
