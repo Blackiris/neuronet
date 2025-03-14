@@ -6,7 +6,7 @@
 class ConvolutionLayer : public INeuronsLayer
 {
 public:
-    ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_size, const unsigned int &stride);
+    ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius);
     Vector<float> compute_outputs(const Vector<float> &input_vector);
     void adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime);
     void apply_new_weights(const float &max_gradiant);

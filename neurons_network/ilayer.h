@@ -6,7 +6,6 @@
 class ILayer
 {
 public:
-    ILayer();
     ILayer(const int &output_size);
     virtual Vector<float> compute_outputs(const Vector<float> &input_vector) = 0;
     virtual unsigned int get_output_size() = 0;

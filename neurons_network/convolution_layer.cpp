@@ -1,8 +1,8 @@
 #include "convolution_layer.h"
 
 
-ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_size, const unsigned int &stride)
-    : INeuronsLayer() {
+ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius)
+    : INeuronsLayer((input_x-2*conv_radius)*(input_y-2*conv_radius)) {
 
 }
 

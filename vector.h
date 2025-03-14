@@ -123,6 +123,10 @@ public:
         this->m_vect.emplace_back(value);
     }
 
+    void insert(const Vector<T>& other) {
+        this->m_vect.insert(this->m_vect.end(), other.m_vect.begin(), other.m_vect.end());
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const Vector<T>& dt) {
         os << '(';
         for(auto it = dt.m_vect.begin(); it != dt.m_vect.end() ; ++it) {
@@ -145,7 +149,7 @@ Vector<T>::Vector() {}
 
 template <typename T>
 Vector<T>::Vector(const int &size) {
-    m_vect.assign(size, 0.f);
+    m_vect.reserve(size);
 }
 
 template <typename T>
