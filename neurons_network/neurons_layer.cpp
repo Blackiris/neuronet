@@ -14,10 +14,6 @@ Vector<float> NeuronsLayer::compute_outputs(const Vector<float> &input_vector) {
     return m_outputs;
 }
 
-unsigned int NeuronsLayer::get_output_size() {
-    return m_neurons.size();
-}
-
 void NeuronsLayer::adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime) {
     for (unsigned int k=0; k<m_neurons.size(); k++) {
         Neuron &neuron = m_neurons[k];
