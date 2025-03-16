@@ -23,7 +23,7 @@ public:
 
 
 private:
-    void train_network_with_data(NeuronsNetwork &network, const TrainingData &datas, const float &epsilon);
+    float train_network_with_data(NeuronsNetwork &network, const TrainingData &datas, const float &epsilon);
 };
 
 #endif // NETWORK_TRAINER_H

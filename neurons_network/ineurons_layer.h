@@ -7,7 +7,7 @@ class INeuronsLayer : public ILayer
 public:
     INeuronsLayer(const int &output_size);
 
-    virtual void adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime) = 0;
+    virtual Vector<float> adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ, const float &epsilon) = 0;
     virtual void apply_new_weights(const float &max_gradiant) = 0;
 
 };

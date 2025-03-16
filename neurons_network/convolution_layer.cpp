@@ -1,10 +1,23 @@
 #include "convolution_layer.h"
-
+#include <random>
 
 ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius)
     : INeuronsLayer((input_x-2*conv_radius)*(input_y-2*conv_radius)), m_conv_weights(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)),
     m_conv_weights_delta(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)),
     m_conv_radius(conv_radius), m_input_x(input_x), m_input_y(input_y) {
+
+    int conv_side_length = 2*conv_radius+1;
+
+    // Xavier - He init
+    std::normal_distribution d{0.0, 2.0/(conv_side_length*conv_side_length)};
+    std::mt19937 gen;
+
+    for (int i=0; i<conv_side_length; i++) {
+        for (int j=0; j<conv_side_length; j++) {
+            float r = d(gen);
+            m_conv_weights[i][j] = r;
+        }
+    }
 }
 
 Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vector) {
@@ -25,8 +38,9 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
 }
 
 
-void ConvolutionLayer::adapt_gradient(ILayer &previous_layer, Vector<float> &dCdZ, const float &epsilon, Vector<float> &dCdZprime) {
+Vector<float> ConvolutionLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ, const float &epsilon) {
     unsigned int output_x = m_input_x - 2*m_conv_radius;
+    Vector<float> dCdZprime(previous_layer_output.size(), 0);
 
     for (unsigned int k=0; k<dCdZ.size(); k++) {
         unsigned int x_out = k%output_x;
@@ -38,16 +52,21 @@ void ConvolutionLayer::adapt_gradient(ILayer &previous_layer, Vector<float> &dCd
             for (int j=-m_conv_radius; j<=(int)m_conv_radius; j++) {
                 const float weight = m_conv_weights[i+m_conv_radius][j+m_conv_radius];
 
-                m_conv_weights_delta[i+m_conv_radius][j+m_conv_radius] += -epsilon * dCdZk * m_outputs[k] * previous_layer.get_value_at(j);
-                dCdZprime[x_out+i+m_conv_radius+(y_out+j+m_conv_radius)*m_input_x] += dCdZk * m_outputs[k] * weight;
+                unsigned int previous_idx = x_out+i+m_conv_radius+(y_out+j+m_conv_radius)*m_input_x;
+                m_conv_weights_delta[i+m_conv_radius][j+m_conv_radius] += -epsilon * dCdZk * previous_layer_output[previous_idx];
+                //std::cout << dCdZk << "-"<< previous_layer_output[previous_idx] << "\n";
+                dCdZprime[previous_idx] += dCdZk * weight;
             }
         }
     }
+
+    return dCdZprime;
 }
 
 void ConvolutionLayer::apply_new_weights(const float &max_gradiant) {
     for (int i=0; i<=(int)m_conv_radius*2; i++) {
         for (int j=0; j<=(int)m_conv_radius*2; j++) {
+            //std::cout << input_vector << "\n\n" << m_outputs <<std::endl;
             m_conv_weights[i][j] += m_conv_weights_delta[i][j];
             m_conv_weights_delta[i][j] = 0;
         }

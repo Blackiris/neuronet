@@ -12,9 +12,9 @@ public:
     Vector();
     explicit Vector(const int &size);
     Vector(const int &size, T default_value);
-    Vector(std::vector<T> vect);
+    Vector(const std::vector<T> &vect);
     Vector(std::initializer_list<T> init);
-    Vector(T *begin, T *end);
+
 
     Vector operator+(const Vector& other) {
         Vector res(this->m_vect);
@@ -87,12 +87,16 @@ public:
         return this->m_vect[pos];
     }
 
-    int size() const {
+    size_t size() const {
         return m_vect.size();
     }
 
     void reserve(const int& size) {
         this->m_vect.reserve(size);
+    }
+
+    void assign(T* begin, T* end) {
+        this->m_vect.assign(begin, end);
     }
 
     void assign(const T& value) {
@@ -127,6 +131,8 @@ public:
         this->m_vect.insert(this->m_vect.end(), other.m_vect.begin(), other.m_vect.end());
     }
 
+
+
     friend std::ostream& operator<<(std::ostream& os, const Vector<T>& dt) {
         os << '(';
         for(auto it = dt.m_vect.begin(); it != dt.m_vect.end() ; ++it) {
@@ -138,6 +144,33 @@ public:
         os << ')';
         return os;
     }
+
+    using iterator = typename std::vector<T>::iterator;
+    using const_iterator = typename std::vector<T>::const_iterator;
+
+    iterator begin() {
+        return m_vect.begin();
+    }
+
+    iterator end() {
+        return m_vect.end();
+    }
+
+    const_iterator begin() const {
+        return m_vect.begin();
+    }
+
+    const_iterator end() const {
+        return m_vect.end();
+    }
+
+
+
+    Vector(T *begin, T *end);
+    Vector(const iterator &begin, const iterator &end);
+
+    template <typename InputIterator>
+    Vector(InputIterator first, InputIterator last) : m_vect(first, last) {}
 
 
 private:
@@ -158,7 +191,7 @@ Vector<T>::Vector(const int &size, T default_value) {
 }
 
 template <typename T>
-Vector<T>::Vector(std::vector<T> vect): m_vect(vect) {}
+Vector<T>::Vector(const std::vector<T> &vect): m_vect(vect) {}
 
 template <typename T>
 Vector<T>::Vector(std::initializer_list<T> init) {
@@ -167,5 +200,8 @@ Vector<T>::Vector(std::initializer_list<T> init) {
 
 template <typename T>
 Vector<T>::Vector(T *begin, T *end) : m_vect(begin, end) {}
+
+template <typename T>
+Vector<T>::Vector(const Vector<T>::iterator &begin, const Vector<T>::iterator &end) : m_vect(begin, end) {}
 
 #endif // VECTOR_H

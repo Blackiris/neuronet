@@ -18,7 +18,7 @@ public:
     float compute_output(Vector<float> input_vector);
     float get_output() const override;
 
-    void adapt_gradient(ILayer &previous_layer, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime);
+    void adapt_gradient(Vector<float> &previous_layer_output, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime);
     void apply_gradient_delta(const float &max_gradiant);
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
     std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };

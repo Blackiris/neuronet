@@ -8,6 +8,7 @@ Neuron::Neuron() {}
 Neuron::Neuron(int nb_weight) : m_weights(nb_weight, 0.f), m_new_weights_delta(nb_weight, 0) {
     // Xavier - He init
     std::normal_distribution d{0.0, 2.0/nb_weight};
+    std::mt19937 gen;
 
     for (int j=0; j<m_weights.size(); j++) {
         float r = d(gen);
@@ -21,11 +22,11 @@ Neuron::Neuron(Vector<float> &weights) :
 Neuron::Neuron(Vector<float> &weights, std::function<float(float)> &lambda) :
     m_activation_fun(lambda), m_weights(weights) {}
 
-void Neuron::adapt_gradient(ILayer &previous_layer, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime) {
-    for (unsigned int j=0; j<previous_layer.get_output_size(); j++) {
+void Neuron::adapt_gradient(Vector<float> &previous_layer_output, const float &dCdZ, const float &epsilon, Vector<float> &dCDZprime) {
+    for (unsigned int j=0; j<previous_layer_output.size(); j++) {
         const float weight = m_weights[j];
 
-        m_new_weights_delta[j] += -epsilon * dCdZ * m_deriv_activation_fun(m_output) * previous_layer.get_value_at(j);
+        m_new_weights_delta[j] += -epsilon * dCdZ * m_deriv_activation_fun(m_output) * previous_layer_output[j];
         m_new_bias_delta += -epsilon *0.01 * dCdZ;
 
         dCDZprime[j] += dCdZ * m_deriv_activation_fun(m_output) * weight;

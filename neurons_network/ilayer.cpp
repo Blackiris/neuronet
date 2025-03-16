@@ -7,6 +7,10 @@ float ILayer::get_value_at(const int &pos) {
     return m_outputs[pos];
 }
 
+Vector<float> ILayer::get_output() {
+    return m_outputs;
+}
+
 unsigned int ILayer::get_output_size() {
     return m_outputs.size();
 }

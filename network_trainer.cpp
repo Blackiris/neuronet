@@ -12,13 +12,14 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
     while(true) {
         for (auto& datas_chunk : datas_chunks) {
             iteration++;
+            float avg_error_length = 0;
             for (auto& data: datas_chunk) {
-                train_network_with_data(network, data, training_params.epsilon);
+                avg_error_length += train_network_with_data(network, data, training_params.epsilon);
             }
 
             network.apply_new_weights(training_params.max_gradiant);
             int correct = test_network(network, test_datas);
-            std::cout << std::format("Epoch {} - {}/{}", iteration, correct, test_datas.size()) << "\n";
+            std::cout << std::format("Epoch {} - {}/{} - avg error length {}", iteration, correct, test_datas.size(), avg_error_length/datas_chunks.size()) << "\n";
             if (iteration >= training_params.nb_epochs) {
                 return;
             }
@@ -30,7 +31,7 @@ unsigned int map_network_output_to_res(const Vector<float> &output) {
     return VectorUtil::find_max_pos<float>(output);
 }
 
-bool isResultGood(const Vector<float> &expected, const Vector<float> &actual) {
+bool is_prediction_good(const Vector<float> &expected, const Vector<float> &actual) {
     return map_network_output_to_res(expected) == map_network_output_to_res(actual);
 }
 
@@ -40,7 +41,7 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, std::vector<TrainingDa
     for (unsigned int i=0; i<datas.size(); i++) {
         const TrainingData data = datas[i];
         Vector<float> actual_res = network.compute(data.input);
-        if (isResultGood(data.res, actual_res)) {
+        if (is_prediction_good(data.res, actual_res)) {
             correct++;
         }
     }
@@ -49,9 +50,11 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, std::vector<TrainingDa
 }
 
 
-void NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &data, const float &epsilon) {
+float NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &data, const float &epsilon) {
     auto actual_res = network.compute(data.input);
-    Vector<float> dCdZ = (actual_res - data.res) * 2;
+    Vector<float> error = actual_res - data.res;
+    float error_length = error.length();
+    Vector<float> dCdZ = error * 2;
     std::vector<Vector<float>> weight_changes;
 
     //std::cout <<actual_res<< "\n" << data.res<<"\n\n\n";
@@ -60,11 +63,13 @@ void NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Trai
         //std::cout <<dCdZ<< "\n";
         std::unique_ptr<INeuronsLayer> &layer = network.m_layers[i];
         ILayer* previous_layer = i > 0 ? (ILayer*)network.m_layers[i-1].get() : &(network.m_input_layer);
-        Vector<float> dCdZprime(previous_layer->get_output_size(), 0.f);
 
-        layer->adapt_gradient(*previous_layer, dCdZ, epsilon, dCdZprime);
+        Vector<float> output = previous_layer->get_output();
+
+        Vector<float> dCdZprime = layer->adapt_gradient(output, dCdZ, epsilon);
 
 
         dCdZ = dCdZprime/layer->get_output_size();
     }
+    return error_length;
 }
