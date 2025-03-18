@@ -3,7 +3,6 @@
 
 #include "../ioutput.h"
 #include "../vector.h"
-#include "ilayer.h"
 #include <functional>
 #include <random>
 
@@ -11,7 +10,7 @@ class Neuron : public IOutput
 {
 public:
     Neuron();
-    Neuron(int nb_weight);
+    Neuron(const int &nb_weight, const float &bias);
     Neuron(Vector<float> &weights);
     Neuron(Vector<float> &weights, std::function<float(float)> &lambda);
 

@@ -35,7 +35,7 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
 
     unsigned int sub_conv_output_size;
     for (unsigned int i=0; i<nb_features_map; i++) {
-        ConvolutionLayer* conv_sub_layer = new ConvolutionLayer(input_x, input_y, 2);
+        ConvolutionLayer* conv_sub_layer = new ConvolutionLayer(input_x, input_y, 1);
         conv_sub_layers.push_back(conv_sub_layer);
         sub_conv_output_size = conv_sub_layer->get_output_size();
     }

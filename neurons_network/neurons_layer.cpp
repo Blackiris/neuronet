@@ -2,7 +2,7 @@
 
 NeuronsLayer::NeuronsLayer(const unsigned int &size, const unsigned int &nb_weights): INeuronsLayer(size) {
     for (unsigned int i=0; i<size; i++) {
-        Neuron neuron(nb_weights);
+        Neuron neuron(nb_weights, 0.f);
         m_neurons.emplace_back(neuron);
     }
 }

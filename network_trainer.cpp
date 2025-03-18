@@ -52,7 +52,8 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, std::vector<TrainingDa
 
 float NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &data) {
     auto actual_res = network.compute(data.input);
-    Vector<float> dCdZ = data.res - actual_res;
+    Vector<float> error = data.res - actual_res;
+    Vector<float> dCdZ = error;
     float error_length = dCdZ.length();
     std::vector<Vector<float>> weight_changes;
 
