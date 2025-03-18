@@ -23,7 +23,7 @@ Vector<float> OneToManyLayer::adapt_gradient(Vector<float> &previous_layer_outpu
         dCdZprime += sub_dCdZprime;
         offset += m_sub_output_size;
     }
-    //std::cout << dCdZprime << "\n";
+    //std::cout << dCdZ << "\n\n" << dCdZprime << "\n";
     return dCdZprime;
 }
 

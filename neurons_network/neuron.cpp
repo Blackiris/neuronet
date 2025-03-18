@@ -8,7 +8,6 @@ Neuron::Neuron() {}
 Neuron::Neuron(int nb_weight) : m_weights(nb_weight, 0.f), m_new_weights_delta(nb_weight, 0) {
     // Xavier - He init
     std::normal_distribution d{0.0, 2.0/nb_weight};
-    std::mt19937 gen;
 
     for (int j=0; j<m_weights.size(); j++) {
         float r = d(gen);

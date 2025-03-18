@@ -35,7 +35,7 @@ void CaseMnist::run() {
     std::vector<unsigned char> training_labels = readLabels("train-labels.idx1-ubyte");
     std::vector<Image> training_images = readImages("train-images.idx3-ubyte");
     std::vector<TrainingData> training_datas = convertToTrainingDatas(training_images, training_labels);
-    std::vector<TrainingData> training_datas_small(&training_datas[0], &training_datas[5]);
+    std::vector<TrainingData> training_datas_small(&training_datas[0], &training_datas[50]);
 
     std::vector<unsigned char> test_labels = readLabels("t10k-labels.idx1-ubyte");
     std::vector<Image> test_images = readImages("t10k-images.idx3-ubyte");
@@ -56,7 +56,7 @@ void CaseMnist::run() {
     //network_trainer.train_network(*network, datas_chunks, test_datas, {0.001, 1000, 1});
     //network_trainer.test_network(*network, test_datas);
 
-    network_trainer.train_network(*network, {training_datas_small}, training_datas_small, {0.002, 1000, 1});
+    network_trainer.train_network(*network, {training_datas_small}, training_datas_small, {1, 1000, 1});
     network_trainer.test_network(*network, training_datas_small);
 }
 

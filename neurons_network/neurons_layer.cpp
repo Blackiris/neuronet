@@ -21,7 +21,7 @@ Vector<float> NeuronsLayer::adapt_gradient(Vector<float> &previous_layer_output,
         neuron.adapt_gradient(previous_layer_output, dCdZ[k], epsilon, dCdZprime);
         //std::cout << std::format("Neurone {} - {}", i, k) << " dCdz " << dCdZ[k] << " Weight: " << neuron.m_weights << "\n";
     }
-    return dCdZprime;
+    return dCdZprime/get_output_size();
 }
 
 void NeuronsLayer::apply_new_weights(const float &max_gradiant) {

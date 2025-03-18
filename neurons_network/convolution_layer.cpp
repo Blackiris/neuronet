@@ -66,7 +66,7 @@ Vector<float> ConvolutionLayer::adapt_gradient(Vector<float> &previous_layer_out
 void ConvolutionLayer::apply_new_weights(const float &max_gradiant) {
     for (int i=0; i<=(int)m_conv_radius*2; i++) {
         for (int j=0; j<=(int)m_conv_radius*2; j++) {
-            //std::cout << input_vector << "\n\n" << m_outputs <<std::endl;
+            //std::cout << m_conv_weights_delta[i][j] << "\n" <<std::endl;
             m_conv_weights[i][j] += m_conv_weights_delta[i][j];
             m_conv_weights_delta[i][j] = 0;
         }

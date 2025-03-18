@@ -60,16 +60,15 @@ float NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tra
     //std::cout <<actual_res<< "\n" << data.res<<"\n\n\n";
 
     for (int i = network.m_layers.size() -1; i>=0; i--) {
-        //std::cout <<dCdZ<< "\n";
+
         std::unique_ptr<INeuronsLayer> &layer = network.m_layers[i];
         ILayer* previous_layer = i > 0 ? (ILayer*)network.m_layers[i-1].get() : &(network.m_input_layer);
 
         Vector<float> output = previous_layer->get_output();
 
         Vector<float> dCdZprime = layer->adapt_gradient(output, dCdZ, epsilon);
-
-
-        dCdZ = dCdZprime/layer->get_output_size();
+        //std::cout <<"dcdz: " << dCdZ<< " (l:"<< dCdZ.length()<< ") "<<")\ndcdzprime: " << dCdZprime<< "(l:"<<dCdZprime.length() <<")\n\n";
+        dCdZ = dCdZprime;
     }
     return error_length;
 }
