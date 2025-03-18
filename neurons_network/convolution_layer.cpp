@@ -38,7 +38,7 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
 }
 
 
-Vector<float> ConvolutionLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ, const float &epsilon) {
+Vector<float> ConvolutionLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) {
     unsigned int output_x = m_input_x - 2*m_conv_radius;
     Vector<float> dCdZprime(previous_layer_output.size(), 0);
 
@@ -53,7 +53,7 @@ Vector<float> ConvolutionLayer::adapt_gradient(Vector<float> &previous_layer_out
                 const float weight = m_conv_weights[i+m_conv_radius][j+m_conv_radius];
 
                 unsigned int previous_idx = x_out+i+m_conv_radius+(y_out+j+m_conv_radius)*m_input_x;
-                m_conv_weights_delta[i+m_conv_radius][j+m_conv_radius] += -epsilon * dCdZk * previous_layer_output[previous_idx];
+                m_conv_weights_delta[i+m_conv_radius][j+m_conv_radius] += dCdZk * previous_layer_output[previous_idx];
                 //std::cout << dCdZk << "-"<< previous_layer_output[previous_idx] << "\n";
                 dCdZprime[previous_idx] += dCdZk * weight;
             }
@@ -63,11 +63,11 @@ Vector<float> ConvolutionLayer::adapt_gradient(Vector<float> &previous_layer_out
     return dCdZprime;
 }
 
-void ConvolutionLayer::apply_new_weights(const float &max_gradiant) {
+void ConvolutionLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
     for (int i=0; i<=(int)m_conv_radius*2; i++) {
         for (int j=0; j<=(int)m_conv_radius*2; j++) {
             //std::cout << m_conv_weights_delta[i][j] << "\n" <<std::endl;
-            m_conv_weights[i][j] += m_conv_weights_delta[i][j];
+            m_conv_weights[i][j] += epsilon*m_conv_weights_delta[i][j];
             m_conv_weights_delta[i][j] = 0;
         }
     }

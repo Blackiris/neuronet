@@ -31,7 +31,7 @@ public:
         return *this;
     }
 
-    Vector operator-(const Vector& other) {
+    Vector operator-(const Vector& other) const {
         Vector res(this->m_vect);
         for (int i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] - other.m_vect[i];

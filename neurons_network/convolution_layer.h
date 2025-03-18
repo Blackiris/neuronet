@@ -8,8 +8,8 @@ class ConvolutionLayer : public INeuronsLayer
 public:
     ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius);
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
-    Vector<float> adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ, const float &epsilon) override;
-    void apply_new_weights(const float &max_gradiant) override;
+    Vector<float> adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) override;
+    void apply_new_weights(const float &epsilon, const float &max_gradiant) override;
 
 private:
     std::vector<std::vector<float>> m_conv_weights, m_conv_weights_delta;
