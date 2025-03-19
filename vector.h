@@ -54,7 +54,7 @@ public:
         return res;
     }
 
-    Vector operator*(const int& value) {
+    Vector operator*(const int& value) const {
         Vector res(this->m_vect);
         for (int i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] * value;
@@ -62,7 +62,14 @@ public:
         return res;
     }
 
-    Vector operator/(const int& value) {
+    Vector& operator*=(const float& value) {
+        for (int i=0; i<m_vect.size(); i++) {
+            this->m_vect[i] = this->m_vect[i] * value;
+        }
+        return *this;
+    }
+
+    Vector operator/(const int& value) const {
         Vector res(this->m_vect);
         for (int i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] / value;

@@ -12,14 +12,14 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
     while(true) {
         for (auto& datas_chunk : datas_chunks) {
             epoch++;
-            float avg_error_length = 0;
+            double avg_loss = 0;
             for (auto& data: datas_chunk) {
-                avg_error_length += train_network_with_data(network, data)/datas_chunks.size();
+                avg_loss += train_network_with_data(network, data)/datas_chunks.size();
             }
 
             network.apply_new_weights(training_params.epsilon, training_params.max_gradiant);
             int correct = test_network(network, test_datas);
-            std::cout << std::format("Epoch {} - {}/{} - avg err len {}", epoch, correct, test_datas.size(), avg_error_length) << "\n";
+            std::cout << std::format("Epoch {} - {}/{} - loss {}", epoch, correct, test_datas.size(), avg_loss) << "\n";
             if (epoch >= training_params.nb_epochs) {
                 return;
             }
@@ -50,11 +50,11 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, std::vector<TrainingDa
 }
 
 
-float NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &data) {
+double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &data) {
     auto actual_res = network.compute(data.input);
     Vector<float> error = data.res - actual_res;
     Vector<float> dCdZ = error;
-    float error_length = dCdZ.length();
+    double loss = dCdZ.length();
     std::vector<Vector<float>> weight_changes;
 
     //std::cout <<actual_res<< "\n" << data.res<<"\n\n\n";
@@ -70,5 +70,5 @@ float NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tra
         //std::cout << "dcdz "<<i<<": " << dCdZ<< " (s:"<< dCdZ.size()<< " - l:"<< dCdZ.length()<< ") "<<")\ndcdzprime "<<i<<": " << dCdZprime<< "(s:"<<dCdZprime.size() << " - l:"<<dCdZprime.length() <<")\n\n";
         dCdZ = dCdZprime;
     }
-    return error_length;
+    return loss;
 }

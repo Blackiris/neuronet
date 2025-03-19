@@ -35,12 +35,13 @@ void Neuron::adapt_gradient(Vector<float> &previous_layer_output, const float &d
 
 void Neuron::apply_gradient_delta(const float &epsilon, const float &max_gradiant) {
     float length = m_new_weights_delta.length();
+    m_new_weights_delta *= epsilon;
     if (length > max_gradiant) {
         m_new_weights_delta /= length/max_gradiant;
     }
-    m_weights += m_new_weights_delta * epsilon;
+    m_weights += m_new_weights_delta;
     m_new_weights_delta.assign(0);
-    m_bias += m_new_bias_delta * epsilon;
+    m_bias += m_new_bias_delta * epsilon *0.01;
     m_new_bias_delta = 0;
 }
 
