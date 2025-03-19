@@ -1,7 +1,6 @@
 #ifndef STD_VECTOR_UTIL_H
 #define STD_VECTOR_UTIL_H
 
-#include <memory>
 #include <algorithm>
 #include <vector>
 

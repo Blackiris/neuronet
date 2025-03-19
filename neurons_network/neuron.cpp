@@ -46,7 +46,7 @@ void Neuron::apply_gradient_delta(const float &epsilon, const float &max_gradian
     /*if (length > max_gradiant) {
         m_new_weights_delta /= length/max_gradiant;
     }*/
-    //std::cout << m_weights << "  -  " << m_new_weights_delta << "\n";
+    //std::cout << m_weights.length() << "  -  " << m_new_weights_delta.length() << "\n";
     m_weights += m_new_weights_delta;
     m_new_weights_delta.assign(0);
     m_bias += m_new_bias_delta * epsilon *0.01;
