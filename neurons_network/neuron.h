@@ -27,7 +27,7 @@ protected:
 
 private:
     float m_bias = 0;
-    float m_new_bias_delta;
+    float m_new_bias_delta = 0;
     Vector<float> m_weights;
     Vector<float> m_new_weights_delta;
 

@@ -7,6 +7,7 @@
 
 struct TrainingParams {
     float epsilon;
+    float epsilon_bias;
     int nb_epochs;
     float max_gradiant;
 };
