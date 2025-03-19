@@ -34,7 +34,7 @@ Vector<float> NeuronsLayer::compute_outputs(const Vector<float> &input_vector) {
     return m_outputs;
 }
 
-Vector<float> NeuronsLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) {
+Vector<float> NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
     Vector<float> dCdZprime(previous_layer_output.size(), 0.f);
     for (unsigned int i=0; i<m_weights_mat.size(); i++) {
         const float error = dCdZ[i] * m_deriv_activation_fun(m_outputs[i]);

@@ -18,7 +18,7 @@ Vector<float> ManyToManyLayer::compute_outputs(const Vector<float> &input_vector
     return result;
 }
 
-Vector<float> ManyToManyLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) {
+Vector<float> ManyToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
     unsigned int offset_input = 0;
     unsigned int offset_output = 0;
     Vector<float> dCdZprime;

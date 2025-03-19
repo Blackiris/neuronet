@@ -14,7 +14,7 @@ Vector<float> OneToManyLayer::compute_outputs(const Vector<float> &input_vector)
     return result;
 }
 
-Vector<float> OneToManyLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) {
+Vector<float> OneToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
     unsigned int offset = 0;
     Vector<float> dCdZprime(previous_layer_output.size(), 0);
     for (auto& sub_layer: m_sub_layers) {

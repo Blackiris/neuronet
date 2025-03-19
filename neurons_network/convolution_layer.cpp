@@ -30,7 +30,7 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
                     val += input_vector[x+i+(y+j)*m_input_x]*m_conv_weights[i+m_conv_radius][j+m_conv_radius];
                 }
             }
-            m_outputs[x-m_conv_radius+(y-m_conv_radius)*output_x] = val;
+            m_outputs[x-m_conv_radius+(y-m_conv_radius)*output_x] = m_activation_fun(val);
         }
     }
 
@@ -38,24 +38,26 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
 }
 
 
-Vector<float> ConvolutionLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) {
+Vector<float> ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
     unsigned int output_x = m_input_x - 2*m_conv_radius;
     Vector<float> dCdZprime(previous_layer_output.size(), 0);
+    unsigned int conv_side = 2*m_conv_radius + 1;
+    unsigned int conv_side_squared = conv_side * conv_side;
 
     for (unsigned int k=0; k<dCdZ.size(); k++) {
         unsigned int x_out = k%output_x;
         unsigned int y_out = k/output_x;
 
-        float dCdZk = dCdZ[k];
+        const float error = dCdZ[k] * m_deriv_activation_fun(m_outputs[k]);
 
         for (int i=-m_conv_radius; i<=(int)m_conv_radius; i++) {
             for (int j=-m_conv_radius; j<=(int)m_conv_radius; j++) {
                 const float weight = m_conv_weights[i+m_conv_radius][j+m_conv_radius];
 
                 unsigned int previous_idx = x_out+i+m_conv_radius+(y_out+j+m_conv_radius)*m_input_x;
-                m_conv_weights_delta[i+m_conv_radius][j+m_conv_radius] += dCdZk * previous_layer_output[previous_idx];
+                m_conv_weights_delta[i+m_conv_radius][j+m_conv_radius] += error * previous_layer_output[previous_idx] / conv_side_squared;
                 //std::cout << dCdZk << "-"<< previous_layer_output[previous_idx] << "\n";
-                dCdZprime[previous_idx] += dCdZk * weight;
+                dCdZprime[previous_idx] += error * weight;
             }
         }
     }

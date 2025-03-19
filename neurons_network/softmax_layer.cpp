@@ -27,20 +27,20 @@ Vector<float> SoftmaxLayer::compute_outputs(const Vector<float> &input_vector) {
 }
 
 
-Vector<float> SoftmaxLayer::adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) {
-    unsigned int output_x = m_input_x / m_size;
+Vector<float> SoftmaxLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
+    const unsigned int output_x = m_input_x / m_size;
     Vector<float> dCdZprime(previous_layer_output.size(), 0);
 
     for (unsigned int k=0; k<dCdZ.size(); k++) {
         unsigned int x_out = k%output_x;
         unsigned int y_out = k/output_x;
 
-        float dCdZk = dCdZ[k];
+        const float dCdZprime_to_add = dCdZ[k] / (m_size * m_size);
 
         for (int i=0; i<(int)m_size; i++) {
             for (int j=0; j<(int)m_size; j++) {
                 unsigned int previous_idx = x_out+i+(y_out+j)*m_input_x;
-                dCdZprime[previous_idx] += dCdZk;
+                dCdZprime[previous_idx] += dCdZprime_to_add;
             }
         }
     }
