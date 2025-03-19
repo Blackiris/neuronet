@@ -2,8 +2,10 @@
 #define NEURONS_LAYER_H
 
 #include "ineurons_layer.h"
-#include "neuron.h"
+
+#include <functional>
 #include <vector>
+#include <random>
 
 class NeuronsLayer : public INeuronsLayer
 {
@@ -15,7 +17,18 @@ public:
     Vector<float> adapt_gradient(Vector<float> &previous_layer_output, Vector<float> &dCdZ) override;
     void apply_new_weights(const float &epsilon, const float &max_gradiant) override;
 
-    std::vector<Neuron> m_neurons;
+
+    std::vector<Vector<float>> m_weights_mat;
+    std::vector<Vector<float>> m_weights_mat_delta;
+    std::vector<float> m_biases;
+    std::vector<float> m_biases_delta;
+
+    std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
+    std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };
+
+private:
+    static std::random_device rd;
+    static std::mt19937 gen;
 };
 
 #endif // NEURONS_LAYER_H

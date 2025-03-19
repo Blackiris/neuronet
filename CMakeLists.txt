@@ -24,7 +24,7 @@ add_executable(NeuroNet main.cpp
 
     ioutput.h
     neurons_network/dummy.h neurons_network/dummy.cpp
-    neurons_network/neuron.h neurons_network/neuron.cpp
+
     neurons_network/ilayer.h neurons_network/ilayer.cpp
     neurons_network/input_layer.h neurons_network/input_layer.cpp
     neurons_network/neurons_layer.h neurons_network/neurons_layer.cpp
