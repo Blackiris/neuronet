@@ -7,23 +7,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(NeuroNet main.cpp
 
-
-
     network_trainer.h network_trainer.cpp
     training_data.h
     vector.h
-
 
     cases/case1.h cases/case1.cpp
     cases/case.h
     cases/case_mnist.h cases/case_mnist.cpp
 
     vector_util.h
-
     std_vector_util.h
-
     ioutput.h
-    neurons_network/dummy.h neurons_network/dummy.cpp
 
     neurons_network/ilayer.h neurons_network/ilayer.cpp
     neurons_network/input_layer.h neurons_network/input_layer.cpp
@@ -32,12 +26,10 @@ add_executable(NeuroNet main.cpp
     neurons_network/neurons_network_factory.h neurons_network/neurons_network_factory.cpp
 
     neurons_network/convolution_layer.h neurons_network/convolution_layer.cpp
-    neurons_network/ineurons_layer.h
-    neurons_network/ineurons_layer.cpp
+    neurons_network/ineurons_layer.h neurons_network/ineurons_layer.cpp
     neurons_network/one_to_many_layer.h neurons_network/one_to_many_layer.cpp
     neurons_network/softmax_layer.h neurons_network/softmax_layer.cpp
     neurons_network/many_to_many_layer.h neurons_network/many_to_many_layer.cpp
-
 )
 
 include(GNUInstallDirs)
