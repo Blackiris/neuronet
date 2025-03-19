@@ -19,7 +19,7 @@ add_executable(NeuroNet main.cpp
     cases/case_mnist.h cases/case_mnist.cpp
 
     vector_util.h
-    vector_util.cpp
+
     std_vector_util.h
 
     ioutput.h
