@@ -5,7 +5,7 @@ std::mt19937 Neuron::gen(Neuron::rd());
 
 Neuron::Neuron() {}
 
-Neuron::Neuron(const int &nb_weight, const float &bias) : m_weights(nb_weight, 0.f), m_new_weights_delta(nb_weight, 0), m_bias(bias) {
+Neuron::Neuron(const int &nb_weight, const float &bias) : m_bias(bias), m_weights(nb_weight, 0.f), m_new_weights_delta(nb_weight, 0) {
     // Xavier - He init
     std::normal_distribution d{0.0, std::sqrt(2.0/nb_weight)};
 

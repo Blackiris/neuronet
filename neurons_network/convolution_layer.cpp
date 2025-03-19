@@ -9,7 +9,7 @@ ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned i
     int conv_side_length = 2*conv_radius+1;
 
     // Xavier - He init
-    std::normal_distribution d{0.0, std::sqrt(2.0/(conv_side_length*conv_side_length))};
+    std::normal_distribution d{0.0, std::sqrt(2.0/(m_input_x*m_input_y))};
     std::mt19937 gen;
 
     for (int i=0; i<conv_side_length; i++) {

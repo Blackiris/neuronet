@@ -14,7 +14,7 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
             epoch++;
             double avg_loss = 0;
             for (auto& data: datas_chunk) {
-                avg_loss += train_network_with_data(network, data)/datas_chunks.size();
+                avg_loss += train_network_with_data(network, data)  / datas_chunk.size();
             }
 
             network.apply_new_weights(training_params.epsilon, training_params.max_gradiant);
