@@ -1,4 +1,4 @@
-#include "softmax_layer.h"
+#include "maxpool_layer.h"
 
 SoftmaxLayer::SoftmaxLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &size)
     : INeuronsLayer(input_x*input_y/(size*size)), m_input_x(input_x), m_input_y(input_y), m_size(size) {}

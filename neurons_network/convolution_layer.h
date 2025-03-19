@@ -3,6 +3,7 @@
 
 #include "ineurons_layer.h"
 #include <functional>
+#include <random>
 
 class ConvolutionLayer : public INeuronsLayer
 {
@@ -19,6 +20,10 @@ private:
 
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
     std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };
+
+private:
+    static std::random_device rd;
+    static std::mt19937 gen;
 };
 
 #endif // CONVOLUTION_LAYER_H

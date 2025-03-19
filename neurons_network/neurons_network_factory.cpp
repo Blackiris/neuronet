@@ -3,7 +3,7 @@
 #include "many_to_many_layer.h"
 #include "neurons_layer.h"
 #include "one_to_many_layer.h"
-#include "softmax_layer.h"
+#include "maxpool_layer.h"
 
 #include <vector>
 

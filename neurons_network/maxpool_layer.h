@@ -1,5 +1,5 @@
-#ifndef SOFTMAX_LAYER_H
-#define SOFTMAX_LAYER_H
+#ifndef MAXPOOL_LAYER_H
+#define MAXPOOL_LAYER_H
 
 #include "ineurons_layer.h"
 
@@ -16,4 +16,4 @@ private:
     const unsigned int m_size;
 };
 
-#endif // SOFTMAX_LAYER_H
+#endif // MAXPOOL_LAYER_H

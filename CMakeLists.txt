@@ -28,7 +28,7 @@ add_executable(NeuroNet main.cpp
     neurons_network/convolution_layer.h neurons_network/convolution_layer.cpp
     neurons_network/ineurons_layer.h neurons_network/ineurons_layer.cpp
     neurons_network/one_to_many_layer.h neurons_network/one_to_many_layer.cpp
-    neurons_network/softmax_layer.h neurons_network/softmax_layer.cpp
+    neurons_network/maxpool_layer.h neurons_network/maxpool_layer.cpp
     neurons_network/many_to_many_layer.h neurons_network/many_to_many_layer.cpp
 )
 

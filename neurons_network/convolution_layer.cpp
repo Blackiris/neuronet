@@ -1,6 +1,9 @@
 #include "convolution_layer.h"
 #include <random>
 
+std::random_device ConvolutionLayer::rd;
+std::mt19937 ConvolutionLayer::gen(ConvolutionLayer::rd());
+
 ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius)
     : INeuronsLayer((input_x-2*conv_radius)*(input_y-2*conv_radius)), m_conv_weights(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)),
     m_conv_weights_delta(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)),
@@ -10,7 +13,6 @@ ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned i
 
     // Xavier - He init
     std::normal_distribution d{0.0, std::sqrt(2.0/(m_input_x*m_input_y))};
-    std::mt19937 gen;
 
     for (int i=0; i<conv_side_length; i++) {
         for (int j=0; j<conv_side_length; j++) {
