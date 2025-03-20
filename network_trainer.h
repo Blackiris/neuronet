@@ -9,7 +9,7 @@ struct TrainingParams {
     float epsilon;
     float epsilon_bias;
     int nb_epochs;
-    float max_gradiant;
+    float clip_gradiant_threshold = 0;
 };
 
 class NetworkTrainer

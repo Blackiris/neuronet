@@ -53,13 +53,13 @@ Vector<float> NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_o
     //return dCdZprime/get_output_size();
 }
 
-void NeuronsLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
+void NeuronsLayer::apply_new_weights(const float &epsilon, const float &clip_gradiant_threshold) {
     for (unsigned int i=0; i<m_weights_mat.size(); i++) {
         float length = m_weights_mat_delta[i].length();
         m_weights_mat_delta[i] *= epsilon;
-        /*if (length > max_gradiant) {
-            m_weights_mat_delta[i] /= length/max_gradiant;
-        }*/
+        if (clip_gradiant_threshold> 0 && length > clip_gradiant_threshold) {
+            m_weights_mat_delta[i] /= length/clip_gradiant_threshold;
+        }
         //std::cout << m_weights.length() << "  -  " << m_new_weights_delta.length() << "\n";
         m_weights_mat[i] += m_weights_mat_delta[i];
         m_weights_mat_delta[i].assign(0);
