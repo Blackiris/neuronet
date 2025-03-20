@@ -34,8 +34,7 @@ Vector<float> NeuronsLayer::compute_outputs(const Vector<float> &input_vector) {
     return m_outputs;
 }
 
-Vector<float> NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
-    Vector<float> dCdZprime(previous_layer_output.size(), 0.f);
+void NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     for (unsigned int i=0; i<m_weights_mat.size(); i++) {
         const float error = dCdZ[i] * m_deriv_activation_fun(m_outputs[i]);
         for (unsigned int j=0; j<previous_layer_output.size(); j++) {
@@ -43,14 +42,12 @@ Vector<float> NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_o
 
             m_weights_mat_delta[i][j] += error * previous_layer_output[j];
 
-            dCdZprime[j] += error * weight;
+            dCdZprime[j+dcdz_prime_offset] += error * weight;
         }
         m_biases_delta[i] += dCdZ[i];
 
         //std::cout << std::format("Neurone {} - {}", i, k) << " dCdz " << dCdZ[k] << " Weight: " << neuron.m_weights << "\n";
     }
-    return dCdZprime;
-    //return dCdZprime/get_output_size();
 }
 
 void NeuronsLayer::apply_new_weights(const float &epsilon, const float &clip_gradiant_threshold) {

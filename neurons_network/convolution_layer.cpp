@@ -50,9 +50,8 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
 }
 
 
-Vector<float> ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
+void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     const unsigned int output_x = m_input_x - 2*m_conv_radius;
-    Vector<float> dCdZprime(previous_layer_output.size(), 0);
 
     for (unsigned int k=0; k<dCdZ.size(); k++) {
         const unsigned int x_out = k%output_x;
@@ -69,18 +68,15 @@ Vector<float> ConvolutionLayer::adapt_gradient(const Vector<float> &previous_lay
                 unsigned int previous_idx = x_out+weight_i+(y_out+weight_j)*m_input_x;
                 m_conv_weights_delta[weight_i][weight_j] += error * previous_layer_output[previous_idx];
                 //std::cout << k << " - error:" << error << " - prevval:"<< previous_layer_output[previous_idx] << "\n";
-                dCdZprime[previous_idx] += error * weight;
+                dCdZprime[previous_idx + dcdz_prime_offset] += error * weight;
             }
         }
     }
-
-    return dCdZprime;
 }
 
 void ConvolutionLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
     for (int i=0; i<=(int)m_conv_radius*2; i++) {
         for (int j=0; j<=(int)m_conv_radius*2; j++) {
-            //std::cout << m_conv_weights_delta[i][j] << "\n" <<std::endl;
             m_conv_weights[i][j] += epsilon*m_conv_weights_delta[i][j];
             m_conv_weights_delta[i][j] = 0;
         }

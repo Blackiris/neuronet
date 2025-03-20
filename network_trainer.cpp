@@ -27,11 +27,11 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
     }
 }
 
-unsigned int map_network_output_to_res(const Vector<float> &output) {
+unsigned int NetworkTrainer::map_network_output_to_res(const Vector<float> &output) {
     return VectorUtil::find_max_pos<float>(output);
 }
 
-bool is_prediction_good(const Vector<float> &expected, const Vector<float> &actual) {
+bool NetworkTrainer::is_prediction_good(const Vector<float> &expected, const Vector<float> &actual) {
     return map_network_output_to_res(expected) == map_network_output_to_res(actual);
 }
 
@@ -64,9 +64,10 @@ double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tr
         std::unique_ptr<INeuronsLayer> &layer = network.m_layers[i];
         ILayer* previous_layer = i > 0 ? (ILayer*)network.m_layers[i-1].get() : &(network.m_input_layer);
 
-        Vector<float> output = previous_layer->get_output();
+        Vector<float> prev_output = previous_layer->get_output();
 
-        Vector<float> dCdZprime = layer->adapt_gradient(output, dCdZ);
+        Vector<float> dCdZprime(prev_output.size(), 0);
+        layer->adapt_gradient(prev_output, dCdZ, dCdZprime, 0);
         //std::cout << "dcdz "<<i<<": " << dCdZ<< " (s:"<< dCdZ.size()<< " - l:"<< dCdZ.length()<< ") "<<")\ndcdzprime "<<i<<": " << dCdZprime<< "(s:"<<dCdZprime.size() << " - l:"<<dCdZprime.length() <<")\n\n";
         dCdZ = dCdZprime;
     }

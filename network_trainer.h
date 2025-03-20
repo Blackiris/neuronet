@@ -25,6 +25,8 @@ public:
 
 private:
     double train_network_with_data(NeuronsNetwork &network, const TrainingData &datas);
+    bool is_prediction_good(const Vector<float> &expected, const Vector<float> &actual);
+    unsigned int map_network_output_to_res(const Vector<float> &output);
 };
 
 #endif // NETWORK_TRAINER_H

@@ -20,21 +20,18 @@ Vector<float> ManyToManyLayer::compute_outputs(const Vector<float> &input_vector
     return m_outputs;
 }
 
-Vector<float> ManyToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
+void ManyToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     unsigned int offset_input = 0;
     unsigned int offset_output = 0;
-    Vector<float> dCdZprime;
     for (auto& sub_layer: m_sub_layers) {
         Vector<float> sub_dCdZ(&dCdZ[offset_output], &dCdZ[offset_output+m_sub_output_size]);
         Vector<float> sub_previous_layer_output(&previous_layer_output[offset_input], &previous_layer_output[offset_input+m_sub_input_size]);
-        Vector<float> sub_dCdZprime = sub_layer->adapt_gradient(sub_previous_layer_output, sub_dCdZ);
+        sub_layer->adapt_gradient(sub_previous_layer_output, sub_dCdZ, dCdZprime, dcdz_prime_offset + offset_input);
 
         offset_input += m_sub_input_size;
         offset_output += m_sub_output_size;
-        dCdZprime.insert_back(sub_dCdZprime);
         //std::cout << sub_dCdZprime << "\n\n" << dCdZprime << "\n\n\n";
     }
-    return dCdZprime;
 }
 
 void ManyToManyLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {

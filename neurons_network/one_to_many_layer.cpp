@@ -16,17 +16,14 @@ Vector<float> OneToManyLayer::compute_outputs(const Vector<float> &input_vector)
     return m_outputs;
 }
 
-Vector<float> OneToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
+void OneToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     unsigned int offset = 0;
-    Vector<float> dCdZprime(previous_layer_output.size(), 0);
     for (auto& sub_layer: m_sub_layers) {
         Vector<float> sub_dCdZ(dCdZ.begin() + offset, dCdZ.begin() + offset+m_sub_output_size);
-        Vector<float> sub_dCdZprime = sub_layer->adapt_gradient(previous_layer_output, sub_dCdZ);
-        dCdZprime += sub_dCdZprime;
+        sub_layer->adapt_gradient(previous_layer_output, sub_dCdZ, dCdZprime, dcdz_prime_offset);
         offset += m_sub_output_size;
     }
     //std::cout << dCdZ << "\n\n" << dCdZprime << "\n";
-    return dCdZprime;
 }
 
 void OneToManyLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
