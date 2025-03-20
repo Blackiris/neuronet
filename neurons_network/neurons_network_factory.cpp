@@ -43,7 +43,7 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
 
     std::vector<INeuronsLayer*> softmax_sub_layers;
     for (unsigned int i=0; i<nb_features_map; i++) {
-        SoftmaxLayer* softmax_sub_layer = new SoftmaxLayer(input_x-4, input_y-4, 2);
+        SoftmaxLayer* softmax_sub_layer = new SoftmaxLayer(input_x-2, input_y-2, 2);
         softmax_sub_layers.push_back(softmax_sub_layer);
     }
     neurons_network->m_layers.push_back(std::make_unique<ManyToManyLayer>(softmax_sub_layers, sub_conv_output_size));

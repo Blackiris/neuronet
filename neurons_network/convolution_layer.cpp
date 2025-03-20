@@ -9,15 +9,25 @@ ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned i
     m_conv_weights_delta(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)),
     m_conv_radius(conv_radius), m_input_x(input_x), m_input_y(input_y) {
 
-    int conv_side_length = 2*conv_radius+1;
+    const unsigned int conv_side = 2*m_conv_radius + 1;
+    const unsigned int conv_side_squared = conv_side * conv_side;
 
     // Xavier - He init
-    std::normal_distribution d{0.0, std::sqrt(2.0/(m_input_x*m_input_y))};
+    std::normal_distribution d{0.0, std::sqrt(2.0/(m_input_x*m_input_y*conv_side_squared))};
 
-    for (int i=0; i<conv_side_length; i++) {
-        for (int j=0; j<conv_side_length; j++) {
+    float mean = 0;
+    for (unsigned int i=0; i<conv_side; i++) {
+        for (unsigned int j=0; j<conv_side; j++) {
             float r = d(gen);
             m_conv_weights[i][j] = r;
+            mean += r;
+        }
+    }
+
+    mean /= conv_side_squared;
+    for (unsigned int i=0; i<conv_side; i++) {
+        for (unsigned int j=0; j<conv_side; j++) {
+            m_conv_weights[i][j] -= mean;
         }
     }
 }
@@ -41,24 +51,24 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
 
 
 Vector<float> ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
-    unsigned int output_x = m_input_x - 2*m_conv_radius;
+    const unsigned int output_x = m_input_x - 2*m_conv_radius;
     Vector<float> dCdZprime(previous_layer_output.size(), 0);
-    unsigned int conv_side = 2*m_conv_radius + 1;
-    unsigned int conv_side_squared = conv_side * conv_side;
 
     for (unsigned int k=0; k<dCdZ.size(); k++) {
-        unsigned int x_out = k%output_x;
-        unsigned int y_out = k/output_x;
+        const unsigned int x_out = k%output_x;
+        const unsigned int y_out = k/output_x;
 
         const float error = dCdZ[k] * m_deriv_activation_fun(m_outputs[k]);
 
         for (int i=-m_conv_radius; i<=(int)m_conv_radius; i++) {
             for (int j=-m_conv_radius; j<=(int)m_conv_radius; j++) {
-                const float weight = m_conv_weights[i+m_conv_radius][j+m_conv_radius];
+                const unsigned int weight_i = i+m_conv_radius;
+                const unsigned int weight_j = j+m_conv_radius;
+                const float weight = m_conv_weights[weight_i][weight_j];
 
-                unsigned int previous_idx = x_out+i+m_conv_radius+(y_out+j+m_conv_radius)*m_input_x;
-                m_conv_weights_delta[i+m_conv_radius][j+m_conv_radius] += error * previous_layer_output[previous_idx] / conv_side_squared;
-                //std::cout << dCdZk << "-"<< previous_layer_output[previous_idx] << "\n";
+                unsigned int previous_idx = x_out+weight_i+(y_out+weight_j)*m_input_x;
+                m_conv_weights_delta[weight_i][weight_j] += error * previous_layer_output[previous_idx];
+                //std::cout << k << " - error:" << error << " - prevval:"<< previous_layer_output[previous_idx] << "\n";
                 dCdZprime[previous_idx] += error * weight;
             }
         }

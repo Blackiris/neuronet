@@ -134,8 +134,12 @@ public:
         this->m_vect.emplace_back(value);
     }
 
-    void insert(const Vector<T>& other) {
+    void insert_back(const Vector<T>& other) {
         this->m_vect.insert(this->m_vect.end(), other.m_vect.begin(), other.m_vect.end());
+    }
+
+    void copy(const Vector<T>& other, const unsigned int &from_index) {
+        std::copy(other.begin(), other.end(), this->m_vect.begin() + from_index);
     }
 
 

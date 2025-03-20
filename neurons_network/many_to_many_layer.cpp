@@ -6,16 +6,18 @@ ManyToManyLayer::ManyToManyLayer(std::vector<INeuronsLayer*> &sub_layers, const 
 
 Vector<float> ManyToManyLayer::compute_outputs(const Vector<float> &input_vector) {
     unsigned int offset_input = 0;
-    Vector<float> result(m_sub_output_size*m_sub_layers.size());
+    unsigned int offset_output = 0;
     for (auto& sub_layer: m_sub_layers) {
 
         Vector<float> sub_input_vector = Vector<float>(input_vector.begin() + offset_input,
                                                     input_vector.begin() + offset_input + m_sub_input_size);
         Vector<float> sub_res = sub_layer->compute_outputs(input_vector);
-        result.insert(sub_res);
+
+        m_outputs.copy(sub_res, offset_output);
         offset_input += m_sub_input_size;
+        offset_output += sub_res.size();
     }
-    return result;
+    return m_outputs;
 }
 
 Vector<float> ManyToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {
@@ -29,7 +31,7 @@ Vector<float> ManyToManyLayer::adapt_gradient(const Vector<float> &previous_laye
 
         offset_input += m_sub_input_size;
         offset_output += m_sub_output_size;
-        dCdZprime.insert(sub_dCdZprime);
+        dCdZprime.insert_back(sub_dCdZprime);
         //std::cout << sub_dCdZprime << "\n\n" << dCdZprime << "\n\n\n";
     }
     return dCdZprime;

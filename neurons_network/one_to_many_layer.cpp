@@ -6,12 +6,14 @@ OneToManyLayer::OneToManyLayer(std::vector<INeuronsLayer*> &sub_layers)
 }
 
 Vector<float> OneToManyLayer::compute_outputs(const Vector<float> &input_vector) {
+    unsigned int offset_output = 0;
     Vector<float> result(m_sub_output_size*m_sub_layers.size());
     for (auto& sub_layer: m_sub_layers) {
         Vector<float> sub_res = sub_layer->compute_outputs(input_vector);
-        result.insert(sub_res);
+        m_outputs.copy(sub_res, offset_output);
+        offset_output += sub_res.size();
     }
-    return result;
+    return m_outputs;
 }
 
 Vector<float> OneToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ) {

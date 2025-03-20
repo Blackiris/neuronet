@@ -50,23 +50,23 @@ void CaseMnist::run() {
     // NeuronsNetwork* network = NeuronsNetworkFactory::create_network(input_size, 16, 10, 2);
 
     // NetworkTrainer network_trainer;
-    // std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 200);
+    // std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 500);
 
-    // network_trainer.train_network(*network, datas_chunks, test_datas, {0.0002, 0.00005, 1000, 0.1});
+    // network_trainer.train_network(*network, datas_chunks, test_datas, {0.02, 0.00005, 1000, 0.1});
     // network_trainer.test_network(*network, test_datas);
 
 
     // Conv NET
     NeuronsNetwork* network = NeuronsNetworkFactory::create_conv_network(training_images[0].nb_cols,training_images[0].nb_rows,
-                                                                        10, 1);
+                                                                        10, 16);
 
     NetworkTrainer network_trainer;
-    std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 100);
+    std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 500);
 
-    network_trainer.train_network(*network, datas_chunks, test_datas, {0.0002, 0, 1000, 1});
-    network_trainer.test_network(*network, test_datas);
+    network_trainer.train_network(*network, datas_chunks, test_datas, {0.3, 0.01, 1000, 1});
+    network_trainer.test_network(*network, training_datas_small);
 
-    // network_trainer.train_network(*network, {training_datas_small}, training_datas_small, {0.05, 0.01, 1000, 1});
+    // network_trainer.train_network(*network, {training_datas_small}, training_datas_small, {0.3, 0.01, 1000, 1});
     // network_trainer.test_network(*network, training_datas_small);
 }
 

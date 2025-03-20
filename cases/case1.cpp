@@ -36,7 +36,7 @@ void Case1::run() {
     NeuronsNetwork* network = NeuronsNetworkFactory::create_network(10, 10, 10, 3);
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datasArray = {datas};
-    network_trainer.train_network(*network, datasArray, datas, {0.1, 0.01, 1000, 1});
+    network_trainer.train_network(*network, datasArray, datas, {1, 0.01, 1000, 1});
     int res = network_trainer.test_network(*network, datas);
     std::cout << "RES: "<< res << "/" << datas.size() << std::flush;
 }
