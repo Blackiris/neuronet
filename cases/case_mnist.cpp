@@ -13,6 +13,8 @@
 #include "../vector.h"
 #include "../std_vector_util.h"
 
+#include <random>
+
 CaseMnist::CaseMnist() {}
 
 
@@ -41,7 +43,9 @@ void CaseMnist::run() {
     std::vector<Image> test_images = readImages("t10k-images.idx3-ubyte");
     std::vector<TrainingData> test_datas = convertToTrainingDatas(test_images, test_labels);
 
-    std::random_shuffle(training_datas.begin(), training_datas.end());
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(training_datas.begin(), training_datas.end(), g);
 
 
 
@@ -58,12 +62,12 @@ void CaseMnist::run() {
 
     // Conv NET
     NeuronsNetwork* network = NeuronsNetworkFactory::create_conv_network(training_images[0].nb_cols,training_images[0].nb_rows,
-                                                                        10, 16);
+                                                                        10, 6, 16);
 
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 500);
 
-    network_trainer.train_network(*network, datas_chunks, test_datas, {0.3, 0.01, 1000, 0});
+    network_trainer.train_network(*network, datas_chunks, test_datas, {0.2, 0.01, 1000, 0});
     network_trainer.test_network(*network, training_datas_small);
 
     // network_trainer.train_network(*network, {training_datas_small}, training_datas_small, {0.3, 0.01, 1000, 1});

@@ -1,10 +1,10 @@
 #include "maxpool_layer.h"
 
-SoftmaxLayer::SoftmaxLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &size)
+MaxpoolLayer::MaxpoolLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &size)
     : INeuronsLayer(input_x*input_y/(size*size)), m_input_x(input_x), m_input_y(input_y), m_size(size) {}
 
 
-Vector<float> SoftmaxLayer::compute_outputs(const Vector<float> &input_vector) {
+Vector<float> MaxpoolLayer::compute_outputs(const Vector<float> &input_vector) {
     unsigned int output_x = m_input_x / m_size;
     unsigned int output_y = m_input_y / m_size;
 
@@ -27,7 +27,7 @@ Vector<float> SoftmaxLayer::compute_outputs(const Vector<float> &input_vector) {
 }
 
 
-void SoftmaxLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
+void MaxpoolLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     const unsigned int output_x = m_input_x / m_size;
 
     for (unsigned int k=0; k<dCdZ.size(); k++) {
@@ -50,6 +50,6 @@ void SoftmaxLayer::adapt_gradient(const Vector<float> &previous_layer_output, co
     }
 }
 
-void SoftmaxLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
+void MaxpoolLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
     // Nothing to do
 }

@@ -1,19 +1,17 @@
-#ifndef MAXPOOL_LAYER_H
-#define MAXPOOL_LAYER_H
+#ifndef SPARSE_LAYER_H
+#define SPARSE_LAYER_H
 
 #include "ineurons_layer.h"
 
-class MaxpoolLayer : public INeuronsLayer
+class SparseLayer : public INeuronsLayer
 {
 public:
-    MaxpoolLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &size);
+    SparseLayer(std::vector<std::vector<bool>> link_table, std::vector<INeuronsLayer*> &sub_layers);
+
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
+
     void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
     void apply_new_weights(const float &epsilon, const float &max_gradiant) override;
-
-private:
-    unsigned int m_input_x, m_input_y;
-    const unsigned int m_size;
 };
 
-#endif // MAXPOOL_LAYER_H
+#endif // SPARSE_LAYER_H
