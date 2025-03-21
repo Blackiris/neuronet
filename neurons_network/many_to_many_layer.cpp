@@ -11,7 +11,7 @@ Vector<float> ManyToManyLayer::compute_outputs(const Vector<float> &input_vector
 
         Vector<float> sub_input_vector = Vector<float>(input_vector.begin() + offset_input,
                                                     input_vector.begin() + offset_input + m_sub_input_size);
-        Vector<float> sub_res = sub_layer->compute_outputs(input_vector);
+        Vector<float> sub_res = sub_layer->compute_outputs(sub_input_vector);
 
         m_outputs.copy(sub_res, offset_output);
         offset_input += m_sub_input_size;

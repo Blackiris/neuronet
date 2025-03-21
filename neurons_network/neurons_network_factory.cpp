@@ -54,7 +54,7 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
                                                  {1,0,0,1,1,1}, {1,1,0,0,1,1}, {1,1,1,0,0,1},
                                                  {1,1,0,1,1,0}, {0,1,1,0,1,1}, {1,0,1,1,0,1},
                                                 {1,1,1,1,1,1}};
-    neurons_network->m_layers.push_back(std::make_unique<SparseLayer>(link_table, maxpool_sub_layers));
+    //neurons_network->m_layers.push_back(std::make_unique<SparseLayer>(link_table, maxpool_sub_layers));
 
 
     neurons_network->m_layers.push_back(std::make_unique<NeuronsLayer>(output_size, sub_conv_output_size*nb_features_map));
