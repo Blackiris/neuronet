@@ -1,25 +1,31 @@
 #include "maxpool_layer.h"
 
-MaxpoolLayer::MaxpoolLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &size)
-    : INeuronsLayer(input_x*input_y/(size*size)), m_input_x(input_x), m_input_y(input_y), m_size(size) {}
+MaxpoolLayer::MaxpoolLayer(const unsigned int &input_width, const unsigned int &input_height, const unsigned int &size)
+    : INeuronsLayer(input_width*input_height/(size*size)), m_input_width(input_width), m_input_height(input_height), m_size(size) {}
 
 
 Vector<float> MaxpoolLayer::compute_outputs(const Vector<float> &input_vector) {
-    unsigned int output_x = m_input_x / m_size;
-    unsigned int output_y = m_input_y / m_size;
+    unsigned int output_width = m_input_width / m_size;
+    unsigned int output_height = m_input_height / m_size;
 
-    for (unsigned int x=0; x<output_x; x++) {
-        for (unsigned int y=0; y<output_y; y++) {
-            float max = input_vector[x*m_size+(y*m_size)*m_input_x];
+    for (unsigned int output_x=0; output_x<output_width; output_x++) {
+        for (unsigned int output_y=0; output_y<output_height; output_y++) {
+            float max = input_vector[output_x*m_size+(output_y*m_size)*m_input_width];
             for (int i=0; i<(int)m_size; i++) {
                 for (int j=0; j<(int)m_size; j++) {
-                    float new_val = input_vector[x+i*m_size+((y+j)*m_size)*m_input_x];
+                    const unsigned int input_x = output_x*m_size+i;
+                    const unsigned int input_y = output_y*m_size+j;
+                    if (input_x >= m_input_width || input_y >= m_input_height) {
+                        continue;
+                    }
+
+                    float new_val = input_vector[input_x+input_y*m_input_width];
                     if (new_val > max) {
                         max = new_val;
                     }
                 }
             }
-            m_outputs[x+y*output_x] = max;
+            m_outputs[output_x+output_y*output_width] = max;
         }
     }
 
@@ -28,7 +34,7 @@ Vector<float> MaxpoolLayer::compute_outputs(const Vector<float> &input_vector) {
 
 
 void MaxpoolLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
-    const unsigned int output_x = m_input_x / m_size;
+    const unsigned int output_x = m_input_width / m_size;
 
     for (unsigned int k=0; k<dCdZ.size(); k++) {
         unsigned int x_out = k%output_x;
@@ -38,7 +44,14 @@ void MaxpoolLayer::adapt_gradient(const Vector<float> &previous_layer_output, co
         float max = previous_layer_output[0];
         for (int i=0; i<(int)m_size; i++) {
             for (int j=0; j<(int)m_size; j++) {
-                unsigned int previous_idx = x_out+i+(y_out+j)*m_input_x;
+                const unsigned int input_x = x_out*m_size+i;
+                const unsigned int input_y = y_out*m_size+j;
+                if (input_x >= m_input_width || input_y >= m_input_height) {
+                    continue;
+                }
+
+
+                unsigned int previous_idx = input_x+input_y*m_input_width;
                 if (previous_layer_output[previous_idx] > max) {
                     max = previous_layer_output[previous_idx];
                     previous_idx_max = previous_idx;

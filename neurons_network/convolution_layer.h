@@ -8,15 +8,18 @@
 class ConvolutionLayer : public INeuronsLayer
 {
 public:
-    ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius);
+    ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius, std::vector<unsigned int> links_table);
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
     void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
     void apply_new_weights(const float &epsilon, const float &max_gradiant) override;
 
 private:
-    std::vector<std::vector<float>> m_conv_weights, m_conv_weights_delta;
+    std::vector<unsigned int> m_links_table;
+    std::vector<std::vector<std::vector<float>>> m_conv_weights, m_conv_weights_delta;
     unsigned int m_conv_radius;
     unsigned int m_input_x, m_input_y;
+    Vector<float> biases, biases_delta;
+    unsigned int m_output_x;
 
     std::function<float(float)> m_activation_fun = [](float x) { return x < 0 ? 0 : x; };
     std::function<float(float)> m_deriv_activation_fun = [](float x) { return x < 0 ? 0 : 1; };

@@ -34,18 +34,24 @@ std::uint32_t read32bits(char* buffer, const int &pos) {
 }
 
 void CaseMnist::run() {
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+
     std::vector<unsigned char> training_labels = readLabels("train-labels.idx1-ubyte");
     std::vector<Image> training_images = readImages("train-images.idx3-ubyte");
     std::vector<TrainingData> training_datas = convertToTrainingDatas(training_images, training_labels);
+    std::shuffle(training_datas.begin(), training_datas.end(), g);
     std::vector<TrainingData> training_datas_small(&training_datas[0], &training_datas[50]);
 
     std::vector<unsigned char> test_labels = readLabels("t10k-labels.idx1-ubyte");
     std::vector<Image> test_images = readImages("t10k-images.idx3-ubyte");
     std::vector<TrainingData> test_datas = convertToTrainingDatas(test_images, test_labels);
+    std::shuffle(test_datas.begin(), test_datas.end(), g);
+    std::vector<TrainingData> test_datas_small(&test_datas[0], &test_datas[1000]);
 
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(training_datas.begin(), training_datas.end(), g);
+
+
 
 
 
@@ -67,8 +73,8 @@ void CaseMnist::run() {
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 500);
 
-    network_trainer.train_network(*network, datas_chunks, test_datas, {0.2, 0.01, 1000, 0});
-    network_trainer.test_network(*network, training_datas_small);
+    network_trainer.train_network(*network, datas_chunks, test_datas_small, {0.1, 0.01, 1000, 0});
+    network_trainer.test_network(*network, test_datas);
 
     // network_trainer.train_network(*network, {training_datas_small}, training_datas_small, {0.3, 0.01, 1000, 1});
     // network_trainer.test_network(*network, training_datas_small);
