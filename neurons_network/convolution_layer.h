@@ -11,7 +11,7 @@ public:
     ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius, std::vector<unsigned int> links_table);
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
     void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
-    void apply_new_weights(const float &epsilon, const float &max_gradiant) override;
+    void apply_new_weights(const TrainingParams &training_params) override;
 
 private:
     std::vector<unsigned int> m_links_table;

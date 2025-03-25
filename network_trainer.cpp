@@ -11,16 +11,21 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
 
     while(true) {
         for (auto& datas_chunk : datas_chunks) {
+            const unsigned int chunk_size = datas_chunk.size();
             epoch++;
             double avg_loss = 0;
             for (auto& data: datas_chunk) {
                 avg_loss += train_network_with_data(network, data);
             }
-            avg_loss /= datas_chunk.size();
+            avg_loss /= chunk_size;
 
-            network.apply_new_weights(training_params.epsilon/datas_chunk.size(), training_params.clip_gradiant_threshold);
-            int correct = test_network(network, test_datas);
-            std::cout << std::format("Epoch {} - {}/{} - loss {}", epoch, correct, test_datas.size(), avg_loss) << "\n";
+            TrainingParams training_params_local = training_params;
+            training_params_local.epsilon /= chunk_size;
+            training_params_local.epsilon_bias /= chunk_size;
+            network.apply_new_weights(training_params_local);
+            int correct_chunk = test_network(network, datas_chunk);
+            int correct_test = test_network(network, test_datas);
+            std::cout << std::format("Epoch {} - acc_train {}/{} - acc_test {}/{} - loss {}", epoch, correct_chunk, chunk_size, correct_test, test_datas.size(), avg_loss) << "\n";
             if (epoch >= training_params.nb_epochs) {
                 return;
             }
@@ -36,7 +41,7 @@ bool NetworkTrainer::is_prediction_good(const Vector<float> &expected, const Vec
     return map_network_output_to_res(expected) == map_network_output_to_res(actual);
 }
 
-int NetworkTrainer::test_network(NeuronsNetwork& network, std::vector<TrainingData> &datas) {
+int NetworkTrainer::test_network(NeuronsNetwork& network, const std::vector<TrainingData> &datas) {
     unsigned int correct = 0;
 
     for (unsigned int i=0; i<datas.size(); i++) {

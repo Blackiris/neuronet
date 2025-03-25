@@ -16,8 +16,8 @@ Vector<float> NeuronsNetwork::compute(const Vector<float> &input) {
 }
 
 
-void NeuronsNetwork::apply_new_weights(const float &epsilon, const float &max_gradiant) {
+void NeuronsNetwork::apply_new_weights(const TrainingParams &training_params) {
     for (auto&& layer: m_layers) {
-        layer->apply_new_weights(epsilon, max_gradiant);
+        layer->apply_new_weights(training_params);
     }
 }

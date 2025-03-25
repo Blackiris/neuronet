@@ -97,15 +97,15 @@ void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output
     }
 }
 
-void ConvolutionLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
+void ConvolutionLayer::apply_new_weights(const TrainingParams &training_params) {
     for (unsigned int link_idx=0; link_idx<m_links_table.size(); link_idx++) {
         for (int i=0; i<=(int)m_conv_radius*2; i++) {
             for (int j=0; j<=(int)m_conv_radius*2; j++) {
-                m_conv_weights[link_idx][i][j] += epsilon*m_conv_weights_delta[link_idx][i][j];
+                m_conv_weights[link_idx][i][j] += training_params.epsilon*m_conv_weights_delta[link_idx][i][j];
                 m_conv_weights_delta[link_idx][i][j] = 0;
 
                 const unsigned int output_idx = i+j*m_output_x;
-                //biases[output_idx] += biases_delta[output_idx] * epsilon * 0.01;
+                //biases[output_idx] += biases_delta[output_idx] * training_params.epsilon_bias;
                 biases_delta[output_idx] = 0;
             }
         }

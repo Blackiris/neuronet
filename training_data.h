@@ -8,4 +8,11 @@ struct TrainingData {
     Vector<float> res;
 };
 
+struct TrainingParams {
+    float epsilon;
+    float epsilon_bias;
+    int nb_epochs;
+    float clip_gradiant_threshold = 0;
+};
+
 #endif // TRAININGDATA_H

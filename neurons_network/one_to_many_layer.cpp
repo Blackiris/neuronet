@@ -25,8 +25,8 @@ void OneToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, 
     //std::cout << dCdZ << "\n\n" << dCdZprime << "\n";
 }
 
-void OneToManyLayer::apply_new_weights(const float &epsilon, const float &max_gradiant) {
+void OneToManyLayer::apply_new_weights(const TrainingParams &training_params) {
     for (auto& sub_layer: m_sub_layers) {
-        sub_layer->apply_new_weights(epsilon, max_gradiant);
+        sub_layer->apply_new_weights(training_params);
     }
 }
