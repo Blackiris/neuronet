@@ -4,7 +4,7 @@ std::random_device NeuronsLayer::rd;
 std::mt19937 NeuronsLayer::gen(NeuronsLayer::rd());
 
 
-NeuronsLayer::NeuronsLayer(const unsigned int &size, const unsigned int &nb_weights): INeuronsLayer(size), m_biases(size, 0.f), m_biases_delta(size, 0.f) {
+NeuronsLayer::NeuronsLayer(const unsigned int &size, const unsigned int &nb_weights): INeuronsLayer(size), variance_moment(size, 0), m_biases(size, 0), m_biases_delta(size, 0) {
     // Xavier - He init
     std::normal_distribution d{0.0, std::sqrt(2.0/nb_weights)};
     for (unsigned int i=0; i<size; i++) {
@@ -23,6 +23,7 @@ NeuronsLayer::NeuronsLayer(const unsigned int &size, const unsigned int &nb_weig
 
         m_weights_mat.emplace_back(m_weights);
         m_weights_mat_delta.emplace_back(Vector<float>(nb_weights, 0.f));
+        m_weights_mat_momentum.emplace_back(Vector<float>(nb_weights, 0.f));
     }
 }
 
@@ -52,13 +53,25 @@ void NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_output, co
 
 void NeuronsLayer::apply_new_weights(const TrainingParams &training_params) {
     for (unsigned int i=0; i<m_weights_mat.size(); i++) {
-        m_weights_mat_delta[i] *= training_params.epsilon;
-        float length = m_weights_mat_delta[i].length();
-        if (training_params.clip_gradiant_threshold> 0 && length > training_params.clip_gradiant_threshold) {
-            m_weights_mat_delta[i] /= length/training_params.clip_gradiant_threshold;
+
+
+        if (training_params.clip_gradiant_threshold> 0) {
+            float length = m_weights_mat_delta[i].length();
+            if (length * training_params.epsilon > training_params.clip_gradiant_threshold) {
+                m_weights_mat_delta[i] /= length * training_params.epsilon/training_params.clip_gradiant_threshold;
+            }
         }
+
         //std::cout << m_weights.length() << "  -  " << m_new_weights_delta.length() << "\n";
-        m_weights_mat[i] += m_weights_mat_delta[i];
+        //m_weights_mat[i] += m_weights_mat_delta[i] * training_params.epsilon;
+
+        //adam
+        m_weights_mat_momentum[i] = m_weights_mat_momentum[i] * training_params.adam_decay_rate_momentum + m_weights_mat_delta[i] * (1-training_params.adam_decay_rate_momentum);
+        variance_moment[i] = training_params.adam_decay_rate_squared * variance_moment[i] + (1-training_params.adam_decay_rate_squared) * m_weights_mat_delta[i].length_squared();
+        const Vector<float> momentum_corrected = m_weights_mat_momentum[i]/(1.f-std::pow(training_params.adam_decay_rate_momentum, training_params.current_epoch));
+        const float variant_corrected = variance_moment[i]/(1.f-std::pow(training_params.adam_decay_rate_squared, training_params.current_epoch));
+        m_weights_mat[i] += momentum_corrected/(std::sqrt(variant_corrected+1e-7)) * training_params.epsilon;
+
         m_weights_mat_delta[i].assign(0);
         m_biases[i] += m_biases_delta[i] * training_params.epsilon_bias;
         m_biases_delta[i] = 0;

@@ -15,8 +15,10 @@ public:
 
 private:
     std::vector<unsigned int> m_links_table;
-    std::vector<std::vector<std::vector<float>>> m_conv_weights, m_conv_weights_delta;
+    std::vector<Vector<float>> m_conv_weights, m_conv_weights_delta;
+    std::vector<std::vector<std::vector<float>>> m_weights_momentum, variance_moment;
     unsigned int m_conv_radius;
+    unsigned int m_conv_diameter;
     unsigned int m_input_x, m_input_y;
     Vector<float> biases, biases_delta;
     unsigned int m_output_x;

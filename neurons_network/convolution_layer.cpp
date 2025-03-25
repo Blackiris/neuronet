@@ -6,36 +6,36 @@ std::mt19937 ConvolutionLayer::gen(ConvolutionLayer::rd());
 
 ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius, std::vector<unsigned int> links_table)
     : INeuronsLayer((input_x-2*conv_radius)*(input_y-2*conv_radius)), m_links_table(links_table),
-    m_conv_radius(conv_radius), m_input_x(input_x), m_input_y(input_y), biases((input_x-2*conv_radius)*(input_y-2*conv_radius), 0), biases_delta(biases.size(), 0)  {
+    m_conv_radius(conv_radius), m_conv_diameter(2*m_conv_radius+1), m_input_x(input_x), m_input_y(input_y), biases(m_links_table.size(), 0), biases_delta(biases.size(), 0)  {
 
     m_output_x = m_input_x - 2*m_conv_radius;
     const unsigned int conv_side = 2*m_conv_radius + 1;
     const unsigned int conv_side_squared = conv_side * conv_side;
     int nb_links = m_links_table.size();
 
+    const unsigned int m_conv_diameter_squared = m_conv_diameter * m_conv_diameter;
+
     // Xavier - He init
     std::normal_distribution d{0.0, std::sqrt(2.0/(m_input_x*m_input_y*conv_side_squared*nb_links))};
 
     for (unsigned int link_idx=0; link_idx<m_links_table.size(); link_idx++) {
-        std::vector<std::vector<float>> conv_weights_link(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0));
+        Vector<float> conv_weights_link(m_conv_diameter_squared, 0);
         float mean = 0;
-        for (unsigned int i=0; i<conv_side; i++) {
-            for (unsigned int j=0; j<conv_side; j++) {
-                float r = d(gen);
-                conv_weights_link[i][j] = r;
-                mean += r;
-            }
+        for (unsigned int i=0; i<m_conv_diameter_squared; i++) {
+            float r = d(gen);
+            conv_weights_link[i] = r;
+            mean += r;
         }
 
         mean /= conv_side_squared;
-        for (unsigned int i=0; i<conv_side; i++) {
-            for (unsigned int j=0; j<conv_side; j++) {
-                conv_weights_link[i][j] -= mean;
-            }
+        for (unsigned int i=0; i<m_conv_diameter_squared; i++) {
+            conv_weights_link[i] -= mean;
         }
 
         m_conv_weights.emplace_back(conv_weights_link);
-        m_conv_weights_delta.emplace_back(std::vector<std::vector<float>>(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)));
+        m_conv_weights_delta.emplace_back(Vector<float>(m_conv_diameter_squared, 0));
+        m_weights_momentum.emplace_back(std::vector<std::vector<float>>(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)));
+        variance_moment.emplace_back(std::vector<std::vector<float>>(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)));
     }
 
 }
@@ -52,11 +52,11 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
                 for (int i=-m_conv_radius; i<=(int)m_conv_radius; i++) {
                     for (int j=-m_conv_radius; j<=(int)m_conv_radius; j++) {
                         val += input_vector[link_offset + x+i+(y+j)*m_input_x]
-                               * m_conv_weights[link_idx][i+m_conv_radius][j+m_conv_radius];
+                               * m_conv_weights[link_idx][i+m_conv_radius+(j+m_conv_radius)*m_conv_diameter];
                     }
                 }
                 const unsigned int output_idx = x-m_conv_radius+(y-m_conv_radius)*m_output_x;
-                m_outputs[output_idx] = m_activation_fun(val + biases[output_idx]);
+                m_outputs[output_idx] = m_activation_fun(val + biases[link_idx]);
             }
         }
     }
@@ -83,13 +83,13 @@ void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output
                 for (int j=-m_conv_radius; j<=(int)m_conv_radius; j++) {
                     const unsigned int weight_i = i+m_conv_radius;
                     const unsigned int weight_j = j+m_conv_radius;
-                    const float weight = m_conv_weights[link_idx][weight_i][weight_j];
+                    const float weight = m_conv_weights[link_idx][weight_i+weight_j*m_conv_diameter];
 
                     unsigned int previous_idx = link_offset + x_out+weight_i+(y_out+weight_j)*m_input_x;
-                    m_conv_weights_delta[link_idx][weight_i][weight_j] += error * previous_layer_output[previous_idx];
+                    m_conv_weights_delta[link_idx][weight_i+weight_j*m_conv_diameter] += error * previous_layer_output[previous_idx];
                     //std::cout << k << " - error:" << error << " - prevval:"<< previous_layer_output[previous_idx] << "\n";
                     dCdZprime[previous_idx + dcdz_prime_offset] += error * weight;
-                    biases_delta[output_idx] += dCdZ[output_idx];
+                    biases_delta[link_idx] += dCdZ[output_idx];
                 }
             }
         }
@@ -99,15 +99,9 @@ void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output
 
 void ConvolutionLayer::apply_new_weights(const TrainingParams &training_params) {
     for (unsigned int link_idx=0; link_idx<m_links_table.size(); link_idx++) {
-        for (int i=0; i<=(int)m_conv_radius*2; i++) {
-            for (int j=0; j<=(int)m_conv_radius*2; j++) {
-                m_conv_weights[link_idx][i][j] += training_params.epsilon*m_conv_weights_delta[link_idx][i][j];
-                m_conv_weights_delta[link_idx][i][j] = 0;
-
-                const unsigned int output_idx = i+j*m_output_x;
-                //biases[output_idx] += biases_delta[output_idx] * training_params.epsilon_bias;
-                biases_delta[output_idx] = 0;
-            }
-        }
+        m_conv_weights[link_idx] += m_conv_weights_delta[link_idx] * training_params.epsilon;
+        m_conv_weights_delta[link_idx].assign(0);
+        biases[link_idx] += biases_delta[link_idx] * training_params.epsilon_bias;
+        biases_delta[link_idx] = 0;
     }
 }

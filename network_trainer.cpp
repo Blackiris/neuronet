@@ -22,6 +22,7 @@ void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<st
             TrainingParams training_params_local = training_params;
             training_params_local.epsilon /= chunk_size;
             training_params_local.epsilon_bias /= chunk_size;
+            training_params_local.current_epoch = epoch;
             network.apply_new_weights(training_params_local);
             int correct_chunk = test_network(network, datas_chunk);
             int correct_test = test_network(network, test_datas);

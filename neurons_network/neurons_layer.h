@@ -20,6 +20,9 @@ public:
 
     std::vector<Vector<float>> m_weights_mat;
     std::vector<Vector<float>> m_weights_mat_delta;
+    std::vector<Vector<float>> m_weights_mat_momentum;
+    Vector<float> variance_moment;
+
     std::vector<float> m_biases;
     std::vector<float> m_biases_delta;
 
