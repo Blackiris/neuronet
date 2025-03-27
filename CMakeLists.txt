@@ -38,7 +38,10 @@ TARGET_LINK_LIBRARIES( ${APP_EXE}
                        NeuroNetLib )
 
 include(GNUInstallDirs)
-install(TARGETS NeuroNetTest
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/NeuroNet)
+
+
+install(TARGETS NeuroNetLib
+    LIBRARY DESTINATION ${ConfigPackageLocation}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
