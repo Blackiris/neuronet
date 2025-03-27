@@ -5,14 +5,12 @@ NeuronsNetwork::NeuronsNetwork() {}
 
 Vector<float> NeuronsNetwork::compute(const Vector<float> &input) {
     Vector<float> intermediate_input = m_input_layer.compute_outputs(input);
-    Vector<float> intermediate_output;
 
     for (auto&& layer: m_layers) {
-        intermediate_output = layer->compute_outputs(intermediate_input);
-        intermediate_input = intermediate_output;
+        intermediate_input = layer->compute_outputs(intermediate_input);
     }
 
-    return intermediate_output;
+    return intermediate_input;
 }
 
 

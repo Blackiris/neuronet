@@ -33,6 +33,7 @@ std::uint32_t read32bits(char* buffer, const int &pos) {
         | reinterpret_cast<unsigned char&>(buffer[pos+3]);
 }
 
+
 void CaseMnist::run() {
 
     std::random_device rd;

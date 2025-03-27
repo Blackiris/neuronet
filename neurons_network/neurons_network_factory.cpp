@@ -1,6 +1,5 @@
 #include "neurons_network_factory.h"
 #include "convolution_layer.h"
-#include "many_to_many_layer.h"
 #include "maxpool_layer.h"
 #include "neurons_layer.h"
 #include "one_to_many_layer.h"
@@ -33,20 +32,13 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
     conv_sub_layers.reserve(nb_features_map);
 
 
-    unsigned int sub_conv_output_size;
+
     for (unsigned int i=0; i<nb_features_map; i++) {
         ConvolutionLayer* conv_sub_layer = new ConvolutionLayer(input_x, input_y, 1, {0});
         conv_sub_layers.push_back(conv_sub_layer);
-        sub_conv_output_size = conv_sub_layer->get_output_size();
     }
     neurons_network->m_layers.push_back(std::make_unique<OneToManyLayer>(conv_sub_layers));
-
-    std::vector<INeuronsLayer*> maxpool_sub_layers;
-    for (unsigned int i=0; i<nb_features_map; i++) {
-        MaxpoolLayer* maxpool_sub_layer = new MaxpoolLayer(input_x-2, input_y-2, 2);
-        maxpool_sub_layers.push_back(maxpool_sub_layer);
-    }
-    neurons_network->m_layers.push_back(std::make_unique<ManyToManyLayer>(maxpool_sub_layers, sub_conv_output_size));
+    neurons_network->m_layers.push_back(std::make_unique<MaxpoolLayer>(input_x-2, input_y-2, nb_features_map, 2));
 
     std::vector<std::vector<unsigned int>> links_tables = {{0,1,2}, {1,2,3}, {2,3,4},
                                                          {3,4,5}, {0,4,5}, {0,1,5},
@@ -62,14 +54,7 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
         sub_conv2_output_size = conv2_sub_layer->get_output_size();
     }
     neurons_network->m_layers.push_back(std::make_unique<OneToManyLayer>(conv2_sub_layers));
-
-
-    std::vector<INeuronsLayer*> maxpool2_sub_layers;
-    for (unsigned int i=0; i<nb_features_map2; i++) {
-        MaxpoolLayer* maxpool2_sub_layer = new MaxpoolLayer((input_x-2)/2-2, (input_y-2)/2-2, 2);
-        maxpool2_sub_layers.push_back(maxpool2_sub_layer);
-    }
-    neurons_network->m_layers.push_back(std::make_unique<ManyToManyLayer>(maxpool2_sub_layers, sub_conv2_output_size));
+    neurons_network->m_layers.push_back(std::make_unique<MaxpoolLayer>((input_x-2)/2-2, (input_y-2)/2-2, nb_features_map2, 2));
 
     neurons_network->m_layers.push_back(std::make_unique<NeuronsLayer>(120, sub_conv2_output_size/4*nb_features_map2));
     neurons_network->m_layers.push_back(std::make_unique<NeuronsLayer>(84, 120));
