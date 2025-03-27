@@ -5,16 +5,10 @@ project(NeuroNet LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(NeuroNet main.cpp
-
+add_library( NeuroNetLib STATIC
     network_trainer.h network_trainer.cpp
     training_data.h
     vector.h
-
-    cases/case1.h cases/case1.cpp
-    cases/case.h
-    cases/case_mnist.h cases/case_mnist.cpp
-
     vector_util.h
     std_vector_util.h
     ioutput.h
@@ -30,11 +24,21 @@ add_executable(NeuroNet main.cpp
     neurons_network/one_to_many_layer.h neurons_network/one_to_many_layer.cpp
     neurons_network/maxpool_layer.h neurons_network/maxpool_layer.cpp
     neurons_network/many_to_many_layer.h neurons_network/many_to_many_layer.cpp
-
 )
 
+SET( APP_EXE NeuroNetTest )
+
+add_executable(${APP_EXE} main.cpp
+    cases/case1.h cases/case1.cpp
+    cases/case.h
+    cases/case_mnist.h cases/case_mnist.cpp
+)
+
+TARGET_LINK_LIBRARIES( ${APP_EXE}
+                       NeuroNetLib )
+
 include(GNUInstallDirs)
-install(TARGETS NeuroNet
+install(TARGETS NeuroNetTest
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
