@@ -67,24 +67,24 @@ void CaseMnist::run() {
 
 
     // Works
-    const unsigned int input_size = training_datas[0].input.size();
-    NeuronsNetwork* network = NeuronsNetworkFactory::create_network(input_size, 100, 10, 3);
+    // const unsigned int input_size = training_datas[0].input.size();
+    // NeuronsNetwork* network = NeuronsNetworkFactory::create_network(input_size, 100, 10, 3);
+
+    // NetworkTrainer network_trainer;
+    // std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 1000);
+
+    // network_trainer.train_network(*network, {datas_chunks[0]}, test_datas_small, {1, 0.0001, 1000, 0, 0.9, 0.99});
+    // network_trainer.test_network(*network, test_datas);
+
+    // Conv NET
+    NeuronsNetwork* network = NeuronsNetworkFactory::create_conv_network(training_images[0].nb_cols,training_images[0].nb_rows,
+                                                                        10, 6, 16);
 
     NetworkTrainer network_trainer;
     std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 1000);
 
-    network_trainer.train_network(*network, {datas_chunks[0]}, test_datas_small, {1, 0.0001, 1000, 0, 0.9, 0.99});
+    network_trainer.train_network(*network, datas_chunks, test_datas_small, {1, 0.001, 10000, 0});
     network_trainer.test_network(*network, test_datas);
-
-    // Conv NET
-    // NeuronsNetwork* network = NeuronsNetworkFactory::create_conv_network(training_images[0].nb_cols,training_images[0].nb_rows,
-    //                                                                     10, 6, 16);
-
-    // NetworkTrainer network_trainer;
-    // std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 5000);
-
-    // network_trainer.train_network(*network, {datas_chunks[0]}, test_datas_small, {0.1, 0.001, 1000, 0});
-    // network_trainer.test_network(*network, test_datas);
 }
 
 

@@ -14,6 +14,7 @@ ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned i
     int nb_links = m_links_table.size();
 
     const unsigned int m_conv_diameter_squared = m_conv_diameter * m_conv_diameter;
+    variance_moment = Vector<float>(m_conv_diameter_squared, 0);
 
     // Xavier - He init
     std::normal_distribution d{0.0, std::sqrt(2.0/(m_input_x*m_input_y*conv_side_squared*nb_links))};
@@ -34,10 +35,8 @@ ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned i
 
         m_conv_weights.emplace_back(conv_weights_link);
         m_conv_weights_delta.emplace_back(Vector<float>(m_conv_diameter_squared, 0));
-        m_weights_momentum.emplace_back(std::vector<std::vector<float>>(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)));
-        variance_moment.emplace_back(std::vector<std::vector<float>>(2*conv_radius+1, std::vector<float>(2*conv_radius+1, 0)));
+        m_weights_momentum.emplace_back(Vector<float>(m_conv_diameter_squared, 0));
     }
-
 }
 
 Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vector) {
@@ -83,10 +82,11 @@ void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output
                 for (int j=-m_conv_radius; j<=(int)m_conv_radius; j++) {
                     const unsigned int weight_i = i+m_conv_radius;
                     const unsigned int weight_j = j+m_conv_radius;
-                    const float weight = m_conv_weights[link_idx][weight_i+weight_j*m_conv_diameter];
+                    const unsigned int weight_idx = weight_i+weight_j*m_conv_diameter;
+                    const float weight = m_conv_weights[link_idx][weight_idx];
 
                     unsigned int previous_idx = link_offset + x_out+weight_i+(y_out+weight_j)*m_input_x;
-                    m_conv_weights_delta[link_idx][weight_i+weight_j*m_conv_diameter] += error * previous_layer_output[previous_idx];
+                    m_conv_weights_delta[link_idx][weight_idx] += error * previous_layer_output[previous_idx];
                     //std::cout << k << " - error:" << error << " - prevval:"<< previous_layer_output[previous_idx] << "\n";
                     dCdZprime[previous_idx + dcdz_prime_offset] += error * weight;
                     biases_delta[link_idx] += dCdZ[output_idx];
@@ -99,8 +99,24 @@ void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output
 
 void ConvolutionLayer::apply_new_weights(const TrainingParams &training_params) {
     for (unsigned int link_idx=0; link_idx<m_links_table.size(); link_idx++) {
-        m_conv_weights[link_idx] += m_conv_weights_delta[link_idx] * training_params.epsilon;
+        // Gradiant Descent
+        //m_conv_weights[link_idx] += m_conv_weights_delta[link_idx] * training_params.epsilon;
+
+
+        //adam
+        m_weights_momentum[link_idx] = m_weights_momentum[link_idx] * training_params.adam_decay_rate_momentum
+                                       + m_conv_weights_delta[link_idx] * (1-training_params.adam_decay_rate_momentum);
+        variance_moment[link_idx] = variance_moment[link_idx] * training_params.adam_decay_rate_squared
+                             + (1-training_params.adam_decay_rate_squared) * m_conv_weights_delta[link_idx].length_squared();
+        const Vector<float> momentum_corrected = m_weights_momentum[link_idx]
+                                                 /(1.f-std::pow(training_params.adam_decay_rate_momentum, training_params.current_epoch));
+        const float variant_corrected = variance_moment[link_idx]
+                                        /(1.f-std::pow(training_params.adam_decay_rate_squared, training_params.current_epoch));
+        m_conv_weights[link_idx] += momentum_corrected/(std::sqrt(variant_corrected+1e-7)) * training_params.epsilon;
+
+
         m_conv_weights_delta[link_idx].assign(0);
+
         biases[link_idx] += biases_delta[link_idx] * training_params.epsilon_bias;
         biases_delta[link_idx] = 0;
     }

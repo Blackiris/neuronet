@@ -66,10 +66,14 @@ void NeuronsLayer::apply_new_weights(const TrainingParams &training_params) {
         //m_weights_mat[i] += m_weights_mat_delta[i] * training_params.epsilon;
 
         //adam
-        m_weights_mat_momentum[i] = m_weights_mat_momentum[i] * training_params.adam_decay_rate_momentum + m_weights_mat_delta[i] * (1-training_params.adam_decay_rate_momentum);
-        variance_moment[i] = training_params.adam_decay_rate_squared * variance_moment[i] + (1-training_params.adam_decay_rate_squared) * m_weights_mat_delta[i].length_squared();
-        const Vector<float> momentum_corrected = m_weights_mat_momentum[i]/(1.f-std::pow(training_params.adam_decay_rate_momentum, training_params.current_epoch));
-        const float variant_corrected = variance_moment[i]/(1.f-std::pow(training_params.adam_decay_rate_squared, training_params.current_epoch));
+        m_weights_mat_momentum[i] = m_weights_mat_momentum[i] * training_params.adam_decay_rate_momentum
+                                    + m_weights_mat_delta[i] * (1-training_params.adam_decay_rate_momentum);
+        variance_moment[i] = training_params.adam_decay_rate_squared * variance_moment[i]
+                             + (1-training_params.adam_decay_rate_squared) * m_weights_mat_delta[i].length_squared();
+        const Vector<float> momentum_corrected = m_weights_mat_momentum[i]
+                                                 /(1.f-std::pow(training_params.adam_decay_rate_momentum, training_params.current_epoch));
+        const float variant_corrected = variance_moment[i]
+                                        /(1.f-std::pow(training_params.adam_decay_rate_squared, training_params.current_epoch));
         m_weights_mat[i] += momentum_corrected/(std::sqrt(variant_corrected+1e-7)) * training_params.epsilon;
 
         m_weights_mat_delta[i].assign(0);
