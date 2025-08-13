@@ -25,8 +25,10 @@ add_library( NeuroNetLib STATIC
     neurons_network/maxpool_layer.h neurons_network/maxpool_layer.cpp
     neurons_network/many_to_many_layer.h neurons_network/many_to_many_layer.cpp
 )
+target_compile_options(NeuroNetLib PUBLIC -Wall -Wextra -O3 -ffast-math)
 
 SET( APP_EXE NeuroNetTest )
+
 
 add_executable(${APP_EXE} main.cpp
     cases/case1.h cases/case1.cpp

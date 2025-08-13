@@ -9,8 +9,8 @@ template <typename T>
 class Vector
 {
 public:
-    Vector();
-    explicit Vector(const int &size);
+    constexpr Vector() noexcept;
+    constexpr explicit Vector(const int &size);
     Vector(const int &size, T default_value);
     Vector(const std::vector<T> &vect);
     Vector(std::initializer_list<T> init);
@@ -18,14 +18,14 @@ public:
 
     Vector operator+(const Vector& other) const {
         Vector res(this->m_vect);
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] + other.m_vect[i];
         }
         return res;
     }
 
     Vector& operator+=(const Vector& other) {
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             this->m_vect[i] = this->m_vect[i] + other.m_vect[i];
         }
         return *this;
@@ -33,14 +33,14 @@ public:
 
     Vector operator-(const Vector& other) const {
         Vector res(this->m_vect);
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] - other.m_vect[i];
         }
         return res;
     }
 
     Vector& operator-=(const Vector& other) {
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             this->m_vect[i] = this->m_vect[i] - other.m_vect[i];
         }
         return *this;
@@ -48,14 +48,14 @@ public:
 
     Vector operator*(const float& value) {
         Vector res(this->m_vect);
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] * value;
         }
         return res;
     }
 
     Vector& operator*=(const float& value) {
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             this->m_vect[i] = this->m_vect[i] * value;
         }
         return *this;
@@ -63,14 +63,14 @@ public:
 
     Vector operator/(const float& value) const {
         Vector res(this->m_vect);
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             res.m_vect[i] = res.m_vect[i] / value;
         }
         return res;
     }
 
     Vector& operator/=(const float& value) {
-        for (int i=0; i<m_vect.size(); i++) {
+        for (size_t i=0; i<m_vect.size(); i++) {
             this->m_vect[i] = this->m_vect[i] / value;
         }
         return *this;
@@ -185,10 +185,10 @@ private:
 };
 
 template <typename T>
-Vector<T>::Vector() {}
+constexpr Vector<T>::Vector() noexcept {}
 
 template <typename T>
-Vector<T>::Vector(const int &size) {
+constexpr Vector<T>::Vector(const int &size) {
     m_vect.reserve(size);
 }
 

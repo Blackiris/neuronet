@@ -38,8 +38,6 @@ Vector<float> MaxpoolLayer::compute_outputs(const Vector<float> &input_vector) {
         output_map_offset += m_output_map_size;
     }
 
-
-
     return m_outputs;
 }
 

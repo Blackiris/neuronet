@@ -10,7 +10,7 @@
 class NeuronsNetwork
 {
 public:
-    NeuronsNetwork();
+    NeuronsNetwork() noexcept;
     Vector<float> compute(const Vector<float> &input);
 
     InputLayer m_input_layer;

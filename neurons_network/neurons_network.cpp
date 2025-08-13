@@ -1,7 +1,7 @@
 #include "neurons_network.h"
 
 
-NeuronsNetwork::NeuronsNetwork() {}
+NeuronsNetwork::NeuronsNetwork() noexcept {}
 
 Vector<float> NeuronsNetwork::compute(const Vector<float> &input) {
     Vector<float> intermediate_input = m_input_layer.compute_outputs(input);

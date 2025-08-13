@@ -6,8 +6,8 @@
 class InputLayer : public ILayer
 {
 public:
-    InputLayer();
-    Vector<float> compute_outputs(const Vector<float> &input_vector) override;
+    InputLayer() noexcept;
+    [[nodiscard]] Vector<float> compute_outputs(const Vector<float> &input_vector) override;
 
 };
 

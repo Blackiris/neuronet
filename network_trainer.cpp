@@ -69,9 +69,9 @@ double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tr
     for (int i = network.m_layers.size() -1; i>=0; i--) {
 
         std::unique_ptr<INeuronsLayer> &layer = network.m_layers[i];
-        ILayer* previous_layer = i > 0 ? (ILayer*)network.m_layers[i-1].get() : &(network.m_input_layer);
+        const ILayer* previous_layer = i > 0 ? (ILayer*)network.m_layers[i-1].get() : &(network.m_input_layer);
 
-        Vector<float> prev_output = previous_layer->get_output();
+        const Vector<float> &prev_output = previous_layer->get_output();
 
         Vector<float> dCdZprime(prev_output.size(), 0);
         layer->adapt_gradient(prev_output, dCdZ, dCdZprime, 0);
