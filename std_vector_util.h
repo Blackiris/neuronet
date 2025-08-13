@@ -10,7 +10,7 @@ namespace StdVectorUtil {
         size_t vector_size = vector.size();
         for(size_t i = 0; i < vector_size; i += chunk_size) {
             auto last = std::min(i+chunk_size, vector_size);
-            res.emplace_back(std::vector<T>(&vector[i], &vector[last]));
+            res.emplace_back(std::vector<T>(vector.begin() + i, vector.begin() + last));
         }
         return res;
     }
