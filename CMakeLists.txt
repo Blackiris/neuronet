@@ -5,13 +5,11 @@ project(NeuroNet LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library( NeuroNetLib STATIC
+SET( APP_EXE NeuroNetTest )
+SET( LIB_NAME NeuroNetLib )
+
+add_library(${LIB_NAME} STATIC
     network_trainer.h network_trainer.cpp
-    training_data.h
-    vector.h
-    vector_util.h
-    std_vector_util.h
-    ioutput.h
 
     neurons_network/ilayer.h neurons_network/ilayer.cpp
     neurons_network/input_layer.h neurons_network/input_layer.cpp
@@ -25,9 +23,7 @@ add_library( NeuroNetLib STATIC
     neurons_network/maxpool_layer.h neurons_network/maxpool_layer.cpp
     neurons_network/many_to_many_layer.h neurons_network/many_to_many_layer.cpp
 )
-target_compile_options(NeuroNetLib PUBLIC -Wall -Wextra -O3 -ffast-math)
-
-SET( APP_EXE NeuroNetTest )
+target_compile_options(${LIB_NAME} PUBLIC -Wall -Wextra -O3 -ffast-math)
 
 
 add_executable(${APP_EXE} main.cpp
@@ -36,14 +32,12 @@ add_executable(${APP_EXE} main.cpp
     cases/case_mnist.h cases/case_mnist.cpp
 )
 
-TARGET_LINK_LIBRARIES( ${APP_EXE}
-                       NeuroNetLib )
+target_link_libraries(${APP_EXE} ${LIB_NAME})
 
 include(GNUInstallDirs)
 set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/NeuroNet)
 
-
-install(TARGETS NeuroNetLib
-    LIBRARY DESTINATION ${ConfigPackageLocation}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+set_target_properties(${LIB_NAME} PROPERTIES PUBLIC_HEADER network_trainer.h)
+install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib
+        PUBLIC_HEADER DESTINATION include/neuronetlib
 )
