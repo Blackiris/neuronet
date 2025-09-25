@@ -46,8 +46,6 @@ void NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_output, co
             dCdZprime[prev_idx+dcdz_prime_offset] += error * weight;
         }
         m_biases_delta[output_idx] += dCdZ[output_idx];
-
-        //std::cout << std::format("Neurone {} - {}", i, k) << " dCdz " << dCdZ[k] << " Weight: " << neuron.m_weights << "\n";
     }
 }
 
@@ -61,9 +59,6 @@ void NeuronsLayer::apply_new_weights(const TrainingParams &training_params) {
                 m_weights_mat_delta[i] /= length * training_params.epsilon/training_params.clip_gradiant_threshold;
             }
         }
-
-        //std::cout << m_weights.length() << "  -  " << m_new_weights_delta.length() << "\n";
-        //m_weights_mat[i] += m_weights_mat_delta[i] * training_params.epsilon;
 
         //adam
         m_weights_mat_momentum[i] = m_weights_mat_momentum[i] * training_params.adam_decay_rate_momentum

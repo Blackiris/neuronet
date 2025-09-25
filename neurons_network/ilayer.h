@@ -8,9 +8,18 @@ class ILayer
 public:
     ILayer(const int &output_size);
     virtual Vector<float> compute_outputs(const Vector<float> &input_vector) = 0;
-    [[nodiscard]] const Vector<float>& get_output() const;
-    [[nodiscard]] unsigned int get_output_size() const;
-    [[nodiscard]] float get_value_at(const int &pos) const;
+
+    [[nodiscard]] inline float get_value_at(const int &pos) const {
+        return m_outputs[pos];
+    }
+
+    [[nodiscard]] inline const Vector<float>& get_output() const {
+        return m_outputs;
+    }
+
+    [[nodiscard]] inline unsigned int get_output_size() const {
+        return m_outputs.size();
+    }
 
 
 protected:
