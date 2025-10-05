@@ -11,16 +11,16 @@ class NetworkTrainer
 public:
     NetworkTrainer();
 
-    void train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks, std::vector<TrainingData> test_datas,
+    void train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks, const std::vector<TrainingData> &test_datas,
                        const TrainingParams &training_params);
 
     int test_network(NeuronsNetwork &network, const std::vector<TrainingData> &datas);
 
 
 private:
-    double train_network_with_data(NeuronsNetwork &network, const TrainingData &datas);
+    static double train_network_with_data(NeuronsNetwork &network, const TrainingData &datas);
     bool is_prediction_good(const Vector<float> &expected, const Vector<float> &actual);
-    unsigned int map_network_output_to_res(const Vector<float> &output);
+    static unsigned int map_network_output_to_res(const Vector<float> &output);
 };
 
 #endif // NETWORK_TRAINER_H

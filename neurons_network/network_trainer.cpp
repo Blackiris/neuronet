@@ -5,19 +5,22 @@
 NetworkTrainer::NetworkTrainer() {}
 
 
-void NetworkTrainer::train_network(NeuronsNetwork &network, const std::vector<std::vector<TrainingData>> &datas_chunks, std::vector<TrainingData> test_datas,
+void NetworkTrainer::train_network(NeuronsNetwork &network,
+                                   const std::vector<std::vector<TrainingData>> &datas_chunks,
+                                   const std::vector<TrainingData> &test_datas,
                                    const TrainingParams &training_params) {
     int epoch(0);
 
     while(true) {
-        for (auto& datas_chunk : datas_chunks) {
+        for (const auto& datas_chunk : datas_chunks) {
             const unsigned int chunk_size = datas_chunk.size();
             epoch++;
-            double avg_loss = 0;
-            for (auto& data: datas_chunk) {
-                avg_loss += train_network_with_data(network, data);
-            }
-            avg_loss /= chunk_size;
+
+            auto loss_fold = [&](double total, const TrainingData &data) {
+                return total + train_network_with_data(network, data);
+            };
+            const double avg_loss = std::accumulate(datas_chunk.begin(), datas_chunk.end(), 0.f, loss_fold)
+                                    / chunk_size;
 
             TrainingParams training_params_local = training_params;
             training_params_local.epsilon /= chunk_size;
@@ -57,9 +60,9 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, const std::vector<Trai
 }
 
 
-double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &data) {
-    auto actual_res = network.compute(data.input);
-    Vector<float> error = data.res - actual_res;
+double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &datas) {
+    auto actual_res = network.compute(datas.input);
+    Vector<float> error = datas.res - actual_res;
     Vector<float> dCdZ = error;
     double loss = dCdZ.length();
 
@@ -68,7 +71,7 @@ double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tr
     for (int i = network.m_layers.size() -1; i>=0; i--) {
 
         std::unique_ptr<INeuronsLayer> &layer = network.m_layers[i];
-        const ILayer* previous_layer = i > 0 ? (ILayer*)network.m_layers[i-1].get() : &(network.m_input_layer);
+        const ILayer* previous_layer = i > 0 ? static_cast<ILayer*>(network.m_layers[i-1].get()) : &(network.m_input_layer);
 
         const Vector<float> &prev_output = previous_layer->get_output();
 

@@ -6,7 +6,7 @@
 class OneToManyLayer : public INeuronsLayer
 {
 public:
-    OneToManyLayer(std::vector<INeuronsLayer*> &sub_layers);
+    explicit OneToManyLayer(std::vector<INeuronsLayer*> &sub_layers);
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
 
     void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
