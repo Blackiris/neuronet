@@ -78,16 +78,15 @@ public:
     }
 
 
-
-    T& operator[](const int& pos) {
+    inline T& operator[](const int& pos) {
         return this->m_vect[pos];
     }
 
-    const T& operator[](const int& pos) const {
+    inline const T& operator[](const int& pos) const {
         return this->m_vect[pos];
     }
 
-    size_t size() const {
+    inline size_t size() const {
         return m_vect.size();
     }
 
@@ -107,7 +106,7 @@ public:
         return std::inner_product(this->m_vect.cbegin(), this->m_vect.cend(), other.m_vect.cbegin(), 0);
     }
 
-    double length() {
+    inline double length() {
         return std::sqrt(length_squared());
     }
 

@@ -62,7 +62,6 @@ double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tr
     Vector<float> error = data.res - actual_res;
     Vector<float> dCdZ = error;
     double loss = dCdZ.length();
-    std::vector<Vector<float>> weight_changes;
 
     //std::cout <<actual_res<< "\n" << data.res<<"\n\n\n";
 

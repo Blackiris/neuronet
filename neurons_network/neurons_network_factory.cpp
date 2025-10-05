@@ -32,7 +32,6 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
     conv_sub_layers.reserve(nb_features_map);
 
 
-
     for (unsigned int i=0; i<nb_features_map; i++) {
         ConvolutionLayer* conv_sub_layer = new ConvolutionLayer(input_x, input_y, 1, {0});
         conv_sub_layers.push_back(conv_sub_layer);
@@ -40,7 +39,7 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
     neurons_network->m_layers.push_back(std::make_unique<OneToManyLayer>(conv_sub_layers));
     neurons_network->m_layers.push_back(std::make_unique<MaxpoolLayer>(input_x-2, input_y-2, nb_features_map, 2));
 
-    std::vector<std::vector<unsigned int>> links_tables = {{0,1,2}, {1,2,3}, {2,3,4},
+    const std::vector<std::vector<unsigned int>> links_tables = {{0,1,2}, {1,2,3}, {2,3,4},
                                                          {3,4,5}, {0,4,5}, {0,1,5},
                                                          {0,1,2,3}, {1,2,3,4}, {2,3,4,5},
                                                          {0,3,4,5}, {0,1,4,5}, {0,1,2,5},

@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET( APP_EXE NeuroNetTest )
 SET( LIB_NAME NeuroNetLib )
 
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+
 add_library(${LIB_NAME} STATIC
     network_trainer.h network_trainer.cpp
 
@@ -23,7 +25,7 @@ add_library(${LIB_NAME} STATIC
     neurons_network/maxpool_layer.h neurons_network/maxpool_layer.cpp
     neurons_network/many_to_many_layer.h neurons_network/many_to_many_layer.cpp
 )
-target_compile_options(${LIB_NAME} PUBLIC -Wall -Wextra -O3 -ffast-math)
+target_compile_options(${LIB_NAME} PUBLIC -O3 -ffast-math)
 
 
 add_executable(${APP_EXE} main.cpp
