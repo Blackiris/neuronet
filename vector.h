@@ -1,9 +1,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <cassert>
 #include <cmath>
 #include <iostream>
-#include <numeric>
 #include <vector>
 
 template <typename T>
@@ -103,7 +103,12 @@ public:
     }
 
     T dot(const Vector<T>& other) {
-        return std::inner_product(this->m_vect.cbegin(), this->m_vect.cend(), other.m_vect.cbegin(), 0);
+        assert(this->m_vect.size() == other.m_vect.size());
+        T s = 0;
+        for (size_t i = 0; i<other.m_vect.size(); i++) {
+            s += this->m_vect[i] * other.m_vect[i];
+        }
+        return s;
     }
 
     inline double length() {

@@ -83,6 +83,6 @@ void MaxpoolLayer::adapt_gradient(const Vector<float> &previous_layer_output, co
 
 }
 
-void MaxpoolLayer::apply_new_weights(const TrainingParams &training_params) {
+void MaxpoolLayer::apply_new_weights(const TrainingParams &) {
     // Nothing to do
 }

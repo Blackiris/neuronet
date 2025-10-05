@@ -46,12 +46,13 @@ NeuronsNetwork* NeuronsNetworkFactory::create_conv_network(const unsigned int &i
                                                          {0,1,3,4}, {1,2,4,5}, {0,2,3,5},
                                                          {0,1,2,3,4,5}};
     std::vector<INeuronsLayer*> conv2_sub_layers;
-    unsigned int sub_conv2_output_size;
+    unsigned int sub_conv2_output_size = 0;
     for (unsigned int i=0; i<nb_features_map2; i++) {
         ConvolutionLayer* conv2_sub_layer = new ConvolutionLayer((input_x-2)/2, (input_y-2)/2, 1, links_tables[i]);
         conv2_sub_layers.push_back(conv2_sub_layer);
         sub_conv2_output_size = conv2_sub_layer->get_output_size();
     }
+
     neurons_network->m_layers.push_back(std::make_unique<OneToManyLayer>(conv2_sub_layers));
     neurons_network->m_layers.push_back(std::make_unique<MaxpoolLayer>((input_x-2)/2-2, (input_y-2)/2-2, nb_features_map2, 2));
 
