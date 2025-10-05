@@ -1,5 +1,4 @@
-#ifndef VECTOR_UTIL_H
-#define VECTOR_UTIL_H
+#pragma once
 
 #include "vector.h"
 namespace VectorUtil {
@@ -32,4 +31,3 @@ namespace VectorUtil {
 
 }
 
-#endif // VECTOR_UTIL_H

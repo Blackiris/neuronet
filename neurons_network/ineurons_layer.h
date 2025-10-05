@@ -2,7 +2,7 @@
 #define INEURONS_LAYER_H
 
 #include "ilayer.h"
-#include "../training_data.h"
+#include "training_data.h"
 
 class INeuronsLayer : public ILayer
 {

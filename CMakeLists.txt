@@ -10,22 +10,8 @@ SET( LIB_NAME NeuroNetLib )
 
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
-add_library(${LIB_NAME} STATIC
-    network_trainer.h network_trainer.cpp
+add_subdirectory(neurons_network)
 
-    neurons_network/ilayer.h neurons_network/ilayer.cpp
-    neurons_network/input_layer.h neurons_network/input_layer.cpp
-    neurons_network/neurons_layer.h neurons_network/neurons_layer.cpp
-    neurons_network/neurons_network.h neurons_network/neurons_network.cpp
-    neurons_network/neurons_network_factory.h neurons_network/neurons_network_factory.cpp
-
-    neurons_network/convolution_layer.h neurons_network/convolution_layer.cpp
-    neurons_network/ineurons_layer.h neurons_network/ineurons_layer.cpp
-    neurons_network/one_to_many_layer.h neurons_network/one_to_many_layer.cpp
-    neurons_network/maxpool_layer.h neurons_network/maxpool_layer.cpp
-    neurons_network/many_to_many_layer.h neurons_network/many_to_many_layer.cpp
-)
-target_compile_options(${LIB_NAME} PUBLIC -O3 -ffast-math)
 
 
 add_executable(${APP_EXE} main.cpp

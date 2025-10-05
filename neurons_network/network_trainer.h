@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "training_data.h"
-#include "neurons_network/neurons_network.h"
+#include "neurons_network.h"
 
 
 class NetworkTrainer

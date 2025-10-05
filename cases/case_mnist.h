@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "../training_data.h"
+#include "../neurons_network/training_data.h"
 
 class CaseMnist : public Case
 {

@@ -5,7 +5,7 @@
 #include <vector>
 #include "input_layer.h"
 #include "ineurons_layer.h"
-#include "../training_data.h"
+#include "training_data.h"
 
 class NeuronsNetwork
 {

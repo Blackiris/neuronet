@@ -2,8 +2,8 @@
 
 #include "../neurons_network/neurons_network.h"
 #include "../neurons_network/neurons_network_factory.h"
-#include "../network_trainer.h"
-#include "../training_data.h"
+#include "../neurons_network/network_trainer.h"
+#include "../neurons_network/training_data.h"
 
 #include <array>
 
