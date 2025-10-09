@@ -8,9 +8,9 @@
 class ConvolutionLayer : public INeuronsLayer
 {
 public:
-    ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius, std::vector<unsigned int> links_table);
+    ConvolutionLayer(const unsigned &input_x, const unsigned &input_y, const unsigned &conv_radius, std::vector<unsigned> links_table);
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
-    void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
+    void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned &dcdz_prime_offset) override;
     void apply_new_weights(const TrainingParams &training_params) override;
 
 private:

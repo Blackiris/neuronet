@@ -2,11 +2,12 @@
 #define ONE_TO_MANY_LAYER_H
 
 #include "ineurons_layer.h"
+#include <memory>
 
 class OneToManyLayer : public INeuronsLayer
 {
 public:
-    explicit OneToManyLayer(std::vector<INeuronsLayer*> &sub_layers);
+    explicit OneToManyLayer(std::vector<std::unique_ptr<INeuronsLayer>> &&sub_layers);
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
 
     void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
@@ -14,7 +15,7 @@ public:
 
 private:
     unsigned int m_sub_output_size;
-    std::vector<INeuronsLayer*> m_sub_layers;
+    std::vector<std::unique_ptr<INeuronsLayer>> m_sub_layers;
 };
 
 #endif // ONE_TO_MANY_LAYER_H

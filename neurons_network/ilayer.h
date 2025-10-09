@@ -7,6 +7,7 @@ class ILayer
 {
 public:
     explicit ILayer(const int &output_size);
+    virtual ~ILayer() noexcept = default;
     virtual Vector<float> compute_outputs(const Vector<float> &input_vector) = 0;
 
     [[nodiscard]] inline float get_value_at(const int &pos) const {

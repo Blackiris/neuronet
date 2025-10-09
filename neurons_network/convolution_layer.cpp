@@ -4,14 +4,14 @@
 std::random_device ConvolutionLayer::rd;
 std::mt19937 ConvolutionLayer::gen(ConvolutionLayer::rd());
 
-ConvolutionLayer::ConvolutionLayer(const unsigned int &input_x, const unsigned int &input_y, const unsigned int &conv_radius, std::vector<unsigned int> links_table)
+ConvolutionLayer::ConvolutionLayer(const unsigned &input_x, const unsigned &input_y, const unsigned &conv_radius, std::vector<unsigned int> links_table)
     : INeuronsLayer((input_x-2*conv_radius)*(input_y-2*conv_radius)), m_links_table(links_table),
     m_conv_radius(conv_radius), m_conv_diameter(2*m_conv_radius+1), m_input_x(input_x), m_input_y(input_y), biases(m_links_table.size(), 0), biases_delta(biases.size(), 0)  {
 
     m_output_x = m_input_x - 2*m_conv_radius;
     const unsigned int conv_side = 2*m_conv_radius + 1;
     const unsigned int conv_side_squared = conv_side * conv_side;
-    int nb_links = m_links_table.size();
+    const int nb_links = m_links_table.size();
 
     const unsigned int m_conv_diameter_squared = m_conv_diameter * m_conv_diameter;
     variance_moment = Vector<float>(m_conv_diameter_squared, 0);

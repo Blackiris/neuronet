@@ -1,7 +1,8 @@
 #include "one_to_many_layer.h"
 
-OneToManyLayer::OneToManyLayer(std::vector<INeuronsLayer*> &sub_layers)
-    : INeuronsLayer(sub_layers[0]->get_output_size()*sub_layers.size()), m_sub_output_size(sub_layers[0]->get_output_size()), m_sub_layers(sub_layers) {
+OneToManyLayer::OneToManyLayer(std::vector<std::unique_ptr<INeuronsLayer>> &&sub_layers)
+    : INeuronsLayer(sub_layers[0]->get_output_size()*sub_layers.size()),
+    m_sub_output_size(sub_layers[0]->get_output_size()), m_sub_layers(std::move(sub_layers)) {
 
 }
 
