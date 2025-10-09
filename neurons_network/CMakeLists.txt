@@ -13,4 +13,12 @@ add_library(${LIB_NAME} STATIC
     maxpool_layer.h maxpool_layer.cpp
     many_to_many_layer.h many_to_many_layer.cpp
 )
-target_compile_options(${LIB_NAME} PUBLIC -O3 -ffast-math)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options(-g -O0)
+endif()
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_compile_options(-O3 -DNDEBUG -ffast-math)
+endif()
+
+target_compile_options(${LIB_NAME} PUBLIC )
