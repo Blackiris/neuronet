@@ -34,7 +34,7 @@ std::vector<float> map_data_to_input(const std::array<bool, 10> &data_array) {
 
 void Case1::run() {
     std::unique_ptr<NeuronsNetwork> network = NeuronsNetworkFactory::create_network(10, 10, 10, 3);
-    NetworkTrainer network_trainer;
+    NetworkTrainer network_trainer(4);
     std::vector<std::vector<TrainingData>> datasArray = {datas};
     network_trainer.train_network(*network, datasArray, datas, {1, 0.01, 1000, 1});
     int res = network_trainer.test_network(*network, datas);

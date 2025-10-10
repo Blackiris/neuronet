@@ -87,7 +87,7 @@ void CaseMnist::run() {
     std::unique_ptr<NeuronsNetwork> network = NeuronsNetworkFactory::create_conv_network(training_images[0].nb_cols,training_images[0].nb_rows,
                                                                         10, 6, 16);
 
-    NetworkTrainer network_trainer;
+    NetworkTrainer network_trainer(8);
     std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 2000);
 
     network_trainer.train_network(*network, datas_chunks, test_datas_small, {1, 0.001, 20, 0});

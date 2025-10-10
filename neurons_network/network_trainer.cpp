@@ -1,8 +1,33 @@
 #include "network_trainer.h"
 #include "vector_util.h"
-#include <format>
+#include <algorithm>
+#include <future>
 
-NetworkTrainer::NetworkTrainer() {}
+NetworkTrainer::NetworkTrainer(size_t number_threads) {
+    thread_pool.reserve(number_threads);
+    for (size_t i = 0; i<number_threads; i++) {
+        thread_pool.emplace_back(std::thread(&NetworkTrainer::thread_work, this));
+    }
+}
+
+void NetworkTrainer::thread_work() {
+    std::unique_lock<std::mutex> unique_lock(tasks_mutex);
+    while (!shutdown) {
+        cv.wait(unique_lock, [&] () {
+              return !tasks.empty() || shutdown;
+        });
+
+        if (shutdown) {
+            break;
+        }
+
+        auto task = std::move(tasks.front());
+        tasks.pop();
+        unique_lock.unlock();
+        task();
+        unique_lock.lock();
+    }
+}
 
 
 void NetworkTrainer::train_network(NeuronsNetwork &network,
@@ -16,10 +41,22 @@ void NetworkTrainer::train_network(NeuronsNetwork &network,
             const unsigned int chunk_size = datas_chunk.size();
             epoch++;
 
-            const auto loss_fold = [&](double total, const TrainingData &data) {
-                return total + train_network_with_data(network, data);
+            std::vector<std::future<double>> futures;
+            futures.reserve(datas_chunk.size());
+
+            std::for_each(datas_chunk.cbegin(), datas_chunk.cend(), [&] (const TrainingData &data) {
+                std::packaged_task<double()> pkg_task([&]() {
+                    return train_network_with_data(network, data);
+                });
+                futures.push_back(pkg_task.get_future());
+                add_task(std::move(pkg_task));
+
+            });
+
+            const auto loss_fold = [&](double total, auto &future) {
+                return total + future.get();
             };
-            const double avg_loss = std::accumulate(datas_chunk.begin(), datas_chunk.end(), 0.f, loss_fold)
+            const double avg_loss = std::accumulate(futures.begin(), futures.end(), 0.f, loss_fold)
                                     / chunk_size;
 
             TrainingParams training_params_local = training_params;
@@ -81,4 +118,15 @@ double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tr
         dCdZ = dCdZprime;
     }
     return loss;
+}
+
+
+
+NetworkTrainer::~NetworkTrainer() noexcept {
+    shutdown = true;
+    cv.notify_all();
+
+    for (auto& thread: thread_pool) {
+        thread.join();
+    }
 }
