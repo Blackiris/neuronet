@@ -1,5 +1,5 @@
 #include "ilayer.h"
 
 
-ILayer::ILayer(const int &output_size) : m_outputs(output_size, 0.f) {}
+ILayer::ILayer(const size_t &output_size) : m_output_size(output_size) {}
 

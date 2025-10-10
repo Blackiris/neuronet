@@ -3,14 +3,17 @@
 
 NeuronsNetwork::NeuronsNetwork() noexcept {}
 
-Vector<float> NeuronsNetwork::compute(const Vector<float> &input) {
-    Vector<float> intermediate_input = m_input_layer.compute_outputs(input);
+std::vector<Vector<float>> NeuronsNetwork::compute(const Vector<float> &input) {
+    std::vector<Vector<float>> outputs_layers;
+    outputs_layers.reserve(m_layers.size()+1);
+
+    outputs_layers.emplace_back(input);
 
     for (auto&& layer: m_layers) {
-        intermediate_input = layer->compute_outputs(intermediate_input);
+        outputs_layers.emplace_back(layer->compute_outputs(outputs_layers.back()));
     }
 
-    return intermediate_input;
+    return outputs_layers;
 }
 
 

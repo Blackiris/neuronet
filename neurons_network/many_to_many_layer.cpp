@@ -7,6 +7,8 @@ ManyToManyLayer::ManyToManyLayer(std::vector<INeuronsLayer*> &sub_layers, const 
 Vector<float> ManyToManyLayer::compute_outputs(const Vector<float> &input_vector) {
     unsigned int offset_input = 0;
     unsigned int offset_output = 0;
+    Vector<float> m_outputs(m_output_size, 0.f);
+
     for (auto& sub_layer: m_sub_layers) {
 
         Vector<float> sub_input_vector = Vector<float>(input_vector.begin() + offset_input,
@@ -20,13 +22,15 @@ Vector<float> ManyToManyLayer::compute_outputs(const Vector<float> &input_vector
     return m_outputs;
 }
 
-void ManyToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
+void ManyToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &current_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     unsigned int offset_input = 0;
     unsigned int offset_output = 0;
     for (auto& sub_layer: m_sub_layers) {
         Vector<float> sub_dCdZ(&dCdZ[offset_output], &dCdZ[offset_output+m_sub_output_size]);
         Vector<float> sub_previous_layer_output(&previous_layer_output[offset_input], &previous_layer_output[offset_input+m_sub_input_size]);
-        sub_layer->adapt_gradient(sub_previous_layer_output, sub_dCdZ, dCdZprime, dcdz_prime_offset + offset_input);
+
+        const Vector<float> sub_current_output(&current_output[offset_output], &current_output[offset_output+m_sub_output_size]);
+        sub_layer->adapt_gradient(sub_previous_layer_output, sub_current_output, sub_dCdZ, dCdZprime, dcdz_prime_offset + offset_input);
 
         offset_input += m_sub_input_size;
         offset_output += m_sub_output_size;

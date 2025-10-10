@@ -6,25 +6,17 @@
 class ILayer
 {
 public:
-    explicit ILayer(const int &output_size);
+    explicit ILayer(const size_t &output_size);
     virtual ~ILayer() noexcept = default;
     virtual Vector<float> compute_outputs(const Vector<float> &input_vector) = 0;
 
-    [[nodiscard]] inline float get_value_at(const int &pos) const {
-        return m_outputs[pos];
-    }
-
-    [[nodiscard]] inline const Vector<float>& get_output() const {
-        return m_outputs;
-    }
-
     [[nodiscard]] inline unsigned int get_output_size() const {
-        return m_outputs.size();
+        return m_output_size;
     }
 
 
 protected:
-    Vector<float> m_outputs;
+    size_t m_output_size;
 };
 
 #endif // ILAYER_H

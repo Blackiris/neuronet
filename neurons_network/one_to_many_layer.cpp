@@ -8,6 +8,8 @@ OneToManyLayer::OneToManyLayer(std::vector<std::unique_ptr<INeuronsLayer>> &&sub
 
 Vector<float> OneToManyLayer::compute_outputs(const Vector<float> &input_vector) {
     unsigned int offset_output = 0;
+    Vector<float> m_outputs(m_output_size, 0.f);
+
     for (auto& sub_layer: m_sub_layers) {
         Vector<float> sub_res = sub_layer->compute_outputs(input_vector);
         m_outputs.copy(sub_res, offset_output);
@@ -16,11 +18,12 @@ Vector<float> OneToManyLayer::compute_outputs(const Vector<float> &input_vector)
     return m_outputs;
 }
 
-void OneToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
+void OneToManyLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &current_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     unsigned int offset = 0;
     for (auto& sub_layer: m_sub_layers) {
         Vector<float> sub_dCdZ(dCdZ.begin() + offset, dCdZ.begin() + offset+m_sub_output_size);
-        sub_layer->adapt_gradient(previous_layer_output, sub_dCdZ, dCdZprime, dcdz_prime_offset);
+        Vector<float> sub_current_output(current_output.begin() + offset, current_output.begin() + offset+m_sub_output_size);
+        sub_layer->adapt_gradient(previous_layer_output, sub_current_output, sub_dCdZ, dCdZprime, dcdz_prime_offset);
         offset += m_sub_output_size;
     }
     //std::cout << dCdZ << "\n\n" << dCdZprime << "\n";

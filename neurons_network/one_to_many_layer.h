@@ -10,7 +10,7 @@ public:
     explicit OneToManyLayer(std::vector<std::unique_ptr<INeuronsLayer>> &&sub_layers);
     Vector<float> compute_outputs(const Vector<float> &input_vector) override;
 
-    void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
+    void adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &current_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) override;
     void apply_new_weights(const TrainingParams &training_params) override;
 
 private:

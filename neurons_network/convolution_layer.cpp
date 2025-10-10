@@ -40,6 +40,7 @@ ConvolutionLayer::ConvolutionLayer(const unsigned &input_x, const unsigned &inpu
 }
 
 Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vector) {
+    Vector<float> m_outputs(m_output_size, 0.f);
     const unsigned int sub_input_size = m_input_x * m_input_y;
 
     for (unsigned int link_idx=0; link_idx<m_links_table.size(); link_idx++) {
@@ -60,20 +61,18 @@ Vector<float> ConvolutionLayer::compute_outputs(const Vector<float> &input_vecto
         }
     }
 
-
-
     return m_outputs;
 }
 
 
-void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
+void ConvolutionLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &current_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     const unsigned int sub_input_size = m_input_x * m_input_y;
 
     for (unsigned int output_idx=0; output_idx<dCdZ.size(); output_idx++) {
         const unsigned int x_out = output_idx%m_output_x;
         const unsigned int y_out = output_idx/m_output_x;
 
-        const float error = dCdZ[output_idx] * m_deriv_activation_fun(m_outputs[output_idx]);
+        const float error = dCdZ[output_idx] * m_deriv_activation_fun(current_output[output_idx]);
 
         for (unsigned int link_idx=0; link_idx<m_links_table.size(); link_idx++) {
             unsigned int link_offset = m_links_table[link_idx]*sub_input_size;

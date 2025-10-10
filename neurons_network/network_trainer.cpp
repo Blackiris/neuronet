@@ -44,18 +44,24 @@ void NetworkTrainer::train_network(NeuronsNetwork &network,
             std::vector<std::future<Result>> futures;
             futures.reserve(datas_chunk.size());
 
-            std::for_each(datas_chunk.cbegin(), datas_chunk.cend(), [&] (const TrainingData &data) {
-                std::packaged_task<Result()> pkg_task([&]() {
-                    return train_network_with_data(network, data);
-                });
-                futures.push_back(pkg_task.get_future());
-                add_task(std::move(pkg_task));
-            });
+            // std::for_each(datas_chunk.cbegin(), datas_chunk.cend(), [&] (const TrainingData &data) {
+            //     std::packaged_task<Result()> pkg_task([&]() {
+            //         return train_network_with_data(network, data);
+            //     });
+            //     futures.push_back(pkg_task.get_future());
+            //     add_task(std::move(pkg_task));
+            // });
 
-            const auto loss_fold = [&](double total, auto &future) {
-                return total + std::get<double>(future.get());
+            // const auto loss_fold = [&](double total, auto &future) {
+            //     return total + std::get<double>(future.get());
+            // };
+            // const double avg_loss = std::accumulate(futures.begin(), futures.end(), 0.f, loss_fold)
+            //                         / chunk_size;
+
+            const auto loss_fold = [&](double total, const TrainingData &data) {
+                return total + train_network_with_data(network, data);
             };
-            const double avg_loss = std::accumulate(futures.begin(), futures.end(), 0.f, loss_fold)
+            const double avg_loss = std::accumulate(datas_chunk.begin(), datas_chunk.end(), 0.f, loss_fold)
                                     / chunk_size;
 
             TrainingParams training_params_local = training_params;
@@ -87,8 +93,8 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, const std::vector<Trai
 
     std::for_each(datas.cbegin(), datas.cend(), [&] (const TrainingData &data) {
         std::packaged_task<Result()> pkg_task([&]() {
-            Vector<float> actual_res = network.compute(data.input);
-            return is_prediction_good(data.res, actual_res);
+            std::vector<Vector<float>> actual_res = network.compute(data.input);
+            return is_prediction_good(data.res, actual_res.back());
         });
         futures.push_back(pkg_task.get_future());
         add_task(std::move(pkg_task));
@@ -102,8 +108,8 @@ int NetworkTrainer::test_network(NeuronsNetwork& network, const std::vector<Trai
 
 
 double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const TrainingData &datas) {
-    auto actual_res = network.compute(datas.input);
-    Vector<float> error = datas.res - actual_res;
+    auto outputs_layers = network.compute(datas.input);
+    Vector<float> error = datas.res - outputs_layers.back();
     Vector<float> dCdZ = error;
     double loss = dCdZ.length();
 
@@ -112,12 +118,11 @@ double NetworkTrainer::train_network_with_data(NeuronsNetwork &network, const Tr
     for (int i = network.m_layers.size() -1; i>=0; i--) {
 
         std::unique_ptr<INeuronsLayer> &layer = network.m_layers[i];
-        const ILayer* previous_layer = i > 0 ? static_cast<ILayer*>(network.m_layers[i-1].get()) : &(network.m_input_layer);
-
-        const Vector<float> &prev_output = previous_layer->get_output();
+        const Vector<float> &prev_output = outputs_layers[i];
+        const Vector<float> &current_output = outputs_layers[i+1];
 
         Vector<float> dCdZprime(prev_output.size(), 0);
-        layer->adapt_gradient(prev_output, dCdZ, dCdZprime, 0);
+        layer->adapt_gradient(prev_output, current_output, dCdZ, dCdZprime, 0);
         //std::cout << "dcdz "<<i<<": " << dCdZ<< " (s:"<< dCdZ.size()<< " - l:"<< dCdZ.length()<< ") "<<")\ndcdzprime "<<i<<": " << dCdZprime<< "(s:"<<dCdZprime.size() << " - l:"<<dCdZprime.length() <<")\n\n";
         dCdZ = dCdZprime;
     }

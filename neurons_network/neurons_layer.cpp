@@ -28,6 +28,8 @@ NeuronsLayer::NeuronsLayer(const unsigned int &size, const unsigned int &nb_weig
 }
 
 Vector<float> NeuronsLayer::compute_outputs(const Vector<float> &input_vector) {
+    Vector<float> m_outputs(m_output_size, 0.f);
+
     for (unsigned int i=0; i<m_weights_mat.size(); i++) {
         float s = m_weights_mat[i].dot(input_vector);
         m_outputs[i] = m_activation_fun(s + m_biases[i]);
@@ -35,9 +37,9 @@ Vector<float> NeuronsLayer::compute_outputs(const Vector<float> &input_vector) {
     return m_outputs;
 }
 
-void NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
+void NeuronsLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &current_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     for (unsigned int output_idx=0; output_idx<m_weights_mat.size(); output_idx++) {
-        const float error = dCdZ[output_idx] * m_deriv_activation_fun(m_outputs[output_idx]);
+        const float error = dCdZ[output_idx] * m_deriv_activation_fun(current_output[output_idx]);
         for (unsigned int prev_idx=0; prev_idx<previous_layer_output.size(); prev_idx++) {
             const float weight = m_weights_mat[output_idx][prev_idx];
 

@@ -12,6 +12,7 @@ Vector<float> MaxpoolLayer::compute_outputs(const Vector<float> &input_vector) {
     const unsigned int output_height = m_input_height / m_size;
     unsigned int input_map_offset = 0;
     unsigned int output_map_offset = 0;
+    Vector<float> m_outputs(m_output_size, 0.f);
 
     for (unsigned int input_map_idx=0; input_map_idx<m_nb_features_map; input_map_idx++) {
         for (unsigned int output_x=0; output_x<output_width; output_x++) {
@@ -42,7 +43,7 @@ Vector<float> MaxpoolLayer::compute_outputs(const Vector<float> &input_vector) {
 }
 
 
-void MaxpoolLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
+void MaxpoolLayer::adapt_gradient(const Vector<float> &previous_layer_output, const Vector<float>&, const Vector<float> &dCdZ, Vector<float> &dCdZprime, const unsigned int &dcdz_prime_offset) {
     const unsigned int output_width = m_input_width / m_size;
 
     unsigned int input_map_offset = 0;

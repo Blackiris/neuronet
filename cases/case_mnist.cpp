@@ -90,7 +90,7 @@ void CaseMnist::run() {
     NetworkTrainer network_trainer(8);
     std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 2000);
 
-    network_trainer.train_network(*network, datas_chunks, test_datas_small, {1, 0.001, 20, 0});
+    network_trainer.train_network(*network, datas_chunks, test_datas_small, {1, 0.01, 200, 0});
 
 #ifdef GPERFTOOLS
     ProfilerStop();
