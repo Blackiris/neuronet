@@ -13,6 +13,10 @@
 #include "../neurons_network/vector.h"
 #include "../std_vector_util.h"
 
+#ifdef GPERFTOOLS
+#include <gperftools/profiler.h>
+#endif
+
 #include <random>
 
 CaseMnist::CaseMnist() {}
@@ -53,7 +57,9 @@ void CaseMnist::run() {
 
 
 
-
+#ifdef GPERFTOOLS
+    ProfilerStart("mnist.prof");
+#endif
 
 
     // Works
@@ -82,9 +88,14 @@ void CaseMnist::run() {
                                                                         10, 6, 16);
 
     NetworkTrainer network_trainer;
-    std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 1000);
+    std::vector<std::vector<TrainingData>> datas_chunks = StdVectorUtil::split_chunks(training_datas, 2000);
 
-    network_trainer.train_network(*network, datas_chunks, test_datas_small, {1, 0.001, 2, 0});
+    network_trainer.train_network(*network, datas_chunks, test_datas_small, {1, 0.001, 20, 0});
+
+#ifdef GPERFTOOLS
+    ProfilerStop();
+#endif
+
     network_trainer.test_network(*network, test_datas);
 }
 

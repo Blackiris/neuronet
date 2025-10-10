@@ -29,7 +29,7 @@ std::unique_ptr<NeuronsNetwork> NeuronsNetworkFactory::create_conv_network(const
     std::unique_ptr<NeuronsNetwork> neurons_network = std::make_unique<NeuronsNetwork>();
 
     std::vector<std::unique_ptr<INeuronsLayer>> conv_sub_layers;
-
+    conv_sub_layers.reserve(nb_features_map);
 
     for (unsigned i=0; i<nb_features_map; i++) {
         conv_sub_layers.push_back(std::make_unique<ConvolutionLayer>(input_x, input_y, 1, std::vector<unsigned>{0}));

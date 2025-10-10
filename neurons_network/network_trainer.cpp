@@ -16,7 +16,7 @@ void NetworkTrainer::train_network(NeuronsNetwork &network,
             const unsigned int chunk_size = datas_chunk.size();
             epoch++;
 
-            auto loss_fold = [&](double total, const TrainingData &data) {
+            const auto loss_fold = [&](double total, const TrainingData &data) {
                 return total + train_network_with_data(network, data);
             };
             const double avg_loss = std::accumulate(datas_chunk.begin(), datas_chunk.end(), 0.f, loss_fold)
@@ -29,7 +29,7 @@ void NetworkTrainer::train_network(NeuronsNetwork &network,
             network.apply_new_weights(training_params_local);
             int correct_chunk = test_network(network, datas_chunk);
             int correct_test = test_network(network, test_datas);
-            std::cout << std::format("Epoch {} - acc_train {}/{} - acc_test {}/{} - loss {}", epoch, correct_chunk, chunk_size, correct_test, test_datas.size(), avg_loss) << "\n";
+            std::cout << "Epoch " << epoch << " - acc_train " << correct_chunk << "/" << chunk_size << " - acc_test "<< correct_test <<"/" << test_datas.size() << " - loss "<< avg_loss << "\n";
             if (epoch >= training_params.nb_epochs) {
                 return;
             }
