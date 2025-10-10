@@ -41,20 +41,19 @@ void NetworkTrainer::train_network(NeuronsNetwork &network,
             const unsigned int chunk_size = datas_chunk.size();
             epoch++;
 
-            std::vector<std::future<double>> futures;
+            std::vector<std::future<Result>> futures;
             futures.reserve(datas_chunk.size());
 
             std::for_each(datas_chunk.cbegin(), datas_chunk.cend(), [&] (const TrainingData &data) {
-                std::packaged_task<double()> pkg_task([&]() {
+                std::packaged_task<Result()> pkg_task([&]() {
                     return train_network_with_data(network, data);
                 });
                 futures.push_back(pkg_task.get_future());
                 add_task(std::move(pkg_task));
-
             });
 
             const auto loss_fold = [&](double total, auto &future) {
-                return total + future.get();
+                return total + std::get<double>(future.get());
             };
             const double avg_loss = std::accumulate(futures.begin(), futures.end(), 0.f, loss_fold)
                                     / chunk_size;
@@ -83,17 +82,22 @@ bool NetworkTrainer::is_prediction_good(const Vector<float> &expected, const Vec
 }
 
 int NetworkTrainer::test_network(NeuronsNetwork& network, const std::vector<TrainingData> &datas) {
-    unsigned int correct = 0;
+    std::vector<std::future<Result>> futures;
+    futures.reserve(datas.size());
 
-    for (unsigned int i=0; i<datas.size(); i++) {
-        const TrainingData data = datas[i];
-        Vector<float> actual_res = network.compute(data.input);
-        if (is_prediction_good(data.res, actual_res)) {
-            correct++;
-        }
-    }
+    std::for_each(datas.cbegin(), datas.cend(), [&] (const TrainingData &data) {
+        std::packaged_task<Result()> pkg_task([&]() {
+            Vector<float> actual_res = network.compute(data.input);
+            return is_prediction_good(data.res, actual_res);
+        });
+        futures.push_back(pkg_task.get_future());
+        add_task(std::move(pkg_task));
+    });
 
-    return correct;
+    const auto correct_fold = [&](double total, auto &future) {
+        return total + (std::get<bool>(future.get()) ? 1 : 0);
+    };
+    return std::accumulate(futures.begin(), futures.end(), 0, correct_fold);
 }
 
 

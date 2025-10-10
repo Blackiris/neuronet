@@ -7,7 +7,10 @@
 #include <future>
 #include <queue>
 #include <thread>
+#include <variant>
 #include <vector>
+
+using Result = std::variant<bool, double>;
 
 class NetworkTrainer
 {
@@ -28,7 +31,7 @@ private:
 
     std::vector<std::thread> thread_pool;
     std::mutex tasks_mutex;
-    std::queue<std::packaged_task<double()>> tasks;
+    std::queue<std::packaged_task<Result()>> tasks;
     bool shutdown = false;
     std::condition_variable cv;
 
